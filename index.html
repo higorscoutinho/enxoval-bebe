@@ -595,6 +595,9 @@
   const TAMANHOS = ['RN', 'P', 'M', 'G', 'GG', '1 ano', '2 anos', 'Único'];
   const ORIGEM_LABEL = { planejado: 'A providenciar', ganhei: 'Ganhei', comprei: 'Comprei', misto: 'Ganhei + comprei' };
 
+  // ⚠️ Cole aqui a URL do seu Web App do Apps Script (termina em /exec)
+  const APPS_SCRIPT_URL = 'COLE_AQUI_A_URL_DO_SEU_APP_SCRIPT';
+
   let items = [];
   let customCategories = [];
   let settings = { title: 'Enxoval da Bebê' };
@@ -611,34 +614,39 @@
     return 'falta';
   }
 
-  // ---------- API (banco de dados via funções Netlify) ----------
-  async function api(url, options) {
-    const res = await fetch(url, options);
+  // ---------- API (Google Apps Script + planilha) ----------
+  async function apiGet(action) {
+    const res = await fetch(APPS_SCRIPT_URL + '?action=' + action);
     if (!res.ok) throw new Error('Request failed: ' + res.status);
-    if (res.status === 204) return null;
+    return res.json();
+  }
+
+  async function apiPost(action, data) {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ action }, data)),
+    });
+    if (!res.ok) throw new Error('Request failed: ' + res.status);
     return res.json();
   }
 
   async function loadData() {
     try {
-      items = await api('/api/items');
+      items = await apiGet('items');
     } catch (e) { items = []; showToast('Não consegui carregar os itens agora.'); }
     try {
-      customCategories = await api('/api/categories');
+      customCategories = await apiGet('categories');
     } catch (e) { customCategories = []; }
     try {
-      const s = await api('/api/settings');
+      const s = await apiGet('settings');
       if (s && s.title) settings.title = s.title;
     } catch (e) { /* keep defaults */ }
   }
 
   async function createItem(data) {
     try {
-      const row = await api('/api/items', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+      const row = await apiPost('createItem', data);
       items.push(row);
       return true;
     } catch (e) { showToast('Não consegui salvar o item.'); return false; }
@@ -646,11 +654,7 @@
 
   async function updateItem(id, data) {
     try {
-      const row = await api('/api/items', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, ...data }),
-      });
+      const row = await apiPost('updateItem', Object.assign({ id }, data));
       const idx = items.findIndex(i => i.id === id);
       if (idx > -1) items[idx] = row;
       return true;
@@ -659,7 +663,7 @@
 
   async function removeItem(id) {
     try {
-      await api('/api/items?id=' + id, { method: 'DELETE' });
+      await apiPost('deleteItem', { id });
       items = items.filter(i => i.id !== id);
       return true;
     } catch (e) { showToast('Não consegui remover o item.'); return false; }
@@ -667,11 +671,7 @@
 
   async function saveCategories(label, icon) {
     try {
-      const row = await api('/api/categories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ label, icon }),
-      });
+      const row = await apiPost('createCategory', { label, icon });
       customCategories.push(row);
       return row;
     } catch (e) { showToast('Não consegui salvar a nova categoria agora.'); return null; }
@@ -679,11 +679,7 @@
 
   async function saveSettings() {
     try {
-      await api('/api/settings', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: settings.title }),
-      });
+      await apiPost('updateSettings', { title: settings.title });
     } catch (e) { showToast('Não consegui salvar o nome agora.'); }
   }
 
@@ -936,10 +932,10 @@
     });
 
     list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => {
-      const it = items.find(i => i.id === Number(b.dataset.edit));
+      const it = items.find(i => i.id === b.dataset.edit);
       if (it) openModal(it);
     }));
-    list.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => deleteItem(Number(b.dataset.del))));
+    list.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => deleteItem(b.dataset.del)));
   }
 
   function escapeHtml(str) {
