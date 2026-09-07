@@ -1,0 +1,12 @@
+{
+  "name": "enxoval-bebe",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Controle de enxoval da bebê - itens, tamanhos e lista de compras",
+  "dependencies": {
+    "@netlify/database": "^2.0.1"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^6.0.0"
+  }
+}

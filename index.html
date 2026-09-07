@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enxoval da Bebê</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FCF6EC;
+    --card: #FFFDF9;
+    --honey: #C1793D;
+    --honey-dark: #A25F2C;
+    --honey-light: #F3D9B5;
+    --brown: #5B3A24;
+    --ink: #3A2C22;
+    --ink-soft: #8A7566;
+    --blush: #E8998D;
+    --sage: #7C9473;
+    --sage-bg: #E7EEE3;
+    --amber: #D9A441;
+    --amber-bg: #FAF0DA;
+    --rose: #D46A5D;
+    --rose-bg: #FBE7E4;
+    --line: #EEE1CC;
+    --radius-lg: 28px;
+    --radius-md: 18px;
+    --radius-sm: 10px;
+    --shadow: 0 6px 20px rgba(91, 58, 36, 0.08);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Nunito', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, .heading {
+    font-family: 'Fredoka', sans-serif;
+    color: var(--brown);
+    margin: 0;
+  }
+
+  button {
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    border: none;
+  }
+
+  button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 3px solid var(--honey-light);
+    outline-offset: 2px;
+  }
+
+  a { color: var(--honey-dark); }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 20px 20px 80px;
+  }
+
+  /* ---------- Header ---------- */
+  header.top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 4px 8px;
+    flex-wrap: wrap;
+  }
+
+  .mascot { flex-shrink: 0; }
+
+  .title-block { flex: 1; min-width: 200px; }
+
+  .title-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+
+  .title-row h1 { font-size: 26px; font-weight: 600; }
+
+  .title-edit-btn {
+    background: none;
+    color: var(--ink-soft);
+    font-size: 13px;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+  }
+  .title-edit-btn:hover { background: var(--honey-light); color: var(--brown); }
+
+  .subtitle { color: var(--ink-soft); font-size: 14px; margin-top: 2px; }
+
+  .ring-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card);
+    border-radius: 999px;
+    padding: 8px 18px 8px 8px;
+    box-shadow: var(--shadow);
+  }
+
+  .ring-label { font-size: 13px; color: var(--ink-soft); line-height: 1.3; }
+  .ring-label strong { display: block; font-family: 'Fredoka'; font-size: 20px; color: var(--brown); }
+
+  /* ---------- Tabs ---------- */
+  nav.tabs {
+    display: flex;
+    gap: 6px;
+    margin: 18px 0 22px;
+    background: var(--honey-light);
+    padding: 6px;
+    border-radius: 999px;
+    width: fit-content;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  nav.tabs button {
+    background: transparent;
+    color: var(--brown);
+    padding: 9px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: background .15s ease, color .15s ease;
+  }
+  nav.tabs button.active { background: var(--honey); color: #fff; }
+  nav.tabs button:not(.active):hover { background: rgba(255,255,255,.5); }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ---------- Cards ---------- */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+  }
+  .card h2 { font-size: 18px; margin-bottom: 14px; }
+
+  .paw-divider {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--honey-light);
+    margin: 6px 0 16px;
+  }
+  .paw-divider .line { flex: 1; height: 1px; background: var(--line); }
+
+  /* ---------- Dashboard: category bars ---------- */
+  .cat-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .cat-row:last-child { border-bottom: none; }
+  .cat-icon {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: var(--honey-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .cat-info { flex: 1; min-width: 0; }
+  .cat-name { font-weight: 700; font-size: 14.5px; color: var(--brown); }
+  .cat-count { font-size: 12.5px; color: var(--ink-soft); }
+  .bar-track {
+    height: 8px;
+    background: var(--honey-light);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 5px;
+  }
+  .bar-fill {
+    height: 100%;
+    background: var(--sage);
+    border-radius: 999px;
+    transition: width .4s ease;
+  }
+  .bar-fill.warn { background: var(--amber); }
+  .bar-fill.low { background: var(--rose); }
+
+  /* ---------- Size grid ---------- */
+  .size-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+  }
+  .size-card {
+    border: 2px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .size-card .size-label {
+    font-family: 'Fredoka';
+    font-weight: 600;
+    color: var(--brown);
+    font-size: 15px;
+  }
+  .size-card .size-pct { font-size: 22px; font-weight: 800; margin: 4px 0 2px; }
+  .size-card .size-count { font-size: 12px; color: var(--ink-soft); }
+
+  /* ---------- Stat pills ---------- */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .stat-card {
+    background: var(--card);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  .stat-card .num { font-family: 'Fredoka'; font-size: 28px; color: var(--brown); }
+  .stat-card .lbl { font-size: 13px; color: var(--ink-soft); font-weight: 700; margin-top: 2px; }
+  .stat-card.sage .num { color: var(--sage); }
+  .stat-card.rose .num { color: var(--rose); }
+  .stat-card.amber .num { color: var(--amber); }
+
+  /* ---------- Toolbar ---------- */
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  select, input[type="text"], input[type="number"], textarea {
+    font-family: 'Nunito';
+    border: 2px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    font-size: 14px;
+    background: #fff;
+    color: var(--ink);
+  }
+  select { min-width: 130px; }
+  .search-input { flex: 1; min-width: 160px; }
+
+  .btn {
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .btn-primary { background: var(--honey); color: #fff; }
+  .btn-primary:hover { background: var(--honey-dark); }
+  .btn-ghost { background: var(--honey-light); color: var(--brown); }
+  .btn-ghost:hover { background: #ecc98c; }
+  .btn-text { background: none; color: var(--ink-soft); padding: 6px 8px; }
+  .btn-text:hover { color: var(--rose); }
+  .btn-icon { background: none; padding: 6px; color: var(--ink-soft); font-size: 15px; border-radius: var(--radius-sm); }
+  .btn-icon:hover { background: var(--honey-light); color: var(--brown); }
+
+  /* ---------- Item list ---------- */
+  .item-row {
+    display: grid;
+    grid-template-columns: 40px 1.6fr 100px 1.3fr 110px 70px;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  .item-row:last-child { border-bottom: none; }
+  .item-row .name { font-weight: 700; color: var(--brown); font-size: 14.5px; }
+  .item-row .meta { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+  .badge {
+    display: inline-block;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--honey-light);
+    color: var(--brown);
+    white-space: nowrap;
+    width: fit-content;
+  }
+  .qty-block { display: flex; flex-direction: column; gap: 4px; }
+  .qty-text { font-size: 12.5px; color: var(--ink-soft); font-weight: 700; }
+  .status-pill {
+    font-size: 12px;
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 999px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .status-pill.completo { background: var(--sage-bg); color: var(--sage); }
+  .status-pill.parcial { background: var(--amber-bg); color: var(--amber); }
+  .status-pill.falta { background: var(--rose-bg); color: var(--rose); }
+  .row-actions { display: flex; gap: 2px; justify-content: flex-end; }
+
+  .list-head {
+    display: grid;
+    grid-template-columns: 40px 1.6fr 100px 1.3fr 110px 70px;
+    gap: 12px;
+    padding: 0 6px 8px;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    border-bottom: 2px solid var(--line);
+  }
+
+  @media (max-width: 720px) {
+    .item-row, .list-head { grid-template-columns: 34px 1fr 90px; }
+    .list-head span:nth-child(4), .list-head span:nth-child(5),
+    .item-row .size-col, .item-row .qty-col { display: none; }
+    .item-row .name .meta-mobile { display: block; font-size: 11.5px; color: var(--ink-soft); margin-top: 4px; }
+  }
+
+  /* ---------- Empty state ---------- */
+  .empty {
+    text-align: center;
+    padding: 50px 20px;
+  }
+  .empty .emoji { font-size: 44px; }
+  .empty h3 { margin: 14px 0 6px; }
+  .empty p { color: var(--ink-soft); max-width: 360px; margin: 0 auto 18px; font-size: 14.5px; }
+
+  /* ---------- Shopping list ---------- */
+  .shop-group { margin-bottom: 22px; }
+  .shop-group h3 {
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    color: var(--brown);
+  }
+  .shop-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--rose-bg);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+  }
+  .shop-item .sname { font-weight: 700; color: var(--brown); font-size: 14px; }
+  .shop-item .ssize { font-size: 12px; color: var(--ink-soft); }
+  .shop-item .sneed { font-weight: 800; color: var(--rose); font-size: 14px; white-space: nowrap; }
+
+  /* ---------- Modal ---------- */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(58, 44, 34, 0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 50;
+  }
+  .overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 26px;
+    width: 100%;
+    max-width: 440px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal h2 { margin-bottom: 16px; font-size: 19px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 13px; font-weight: 700; color: var(--brown); margin-bottom: 5px; }
+  .field input, .field select, .field textarea { width: 100%; }
+  .field-row { display: flex; gap: 10px; }
+  .field-row .field { flex: 1; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+
+  .toast {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--brown);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity .25s ease, transform .25s ease;
+    pointer-events: none;
+    z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bar-fill, .toast { transition: none; }
+  }
+
+  @media print {
+    nav.tabs, .toolbar, .row-actions, header.top .ring-wrap, .fab { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="top">
+    <div class="mascot">
+      <svg width="56" height="56" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="48" fill="#F3D9B5"/>
+        <circle cx="26" cy="24" r="12" fill="#C1793D"/>
+        <circle cx="74" cy="24" r="12" fill="#C1793D"/>
+        <circle cx="26" cy="24" r="6" fill="#5B3A24"/>
+        <circle cx="74" cy="24" r="6" fill="#5B3A24"/>
+        <circle cx="50" cy="55" r="34" fill="#C1793D"/>
+        <ellipse cx="50" cy="64" rx="16" ry="13" fill="#F9EBD6"/>
+        <circle cx="38" cy="48" r="4.5" fill="#3A2C22"/>
+        <circle cx="62" cy="48" r="4.5" fill="#3A2C22"/>
+        <ellipse cx="50" cy="60" rx="5" ry="4" fill="#5B3A24"/>
+        <path d="M50 63 Q50 68 44 69" stroke="#5B3A24" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M50 63 Q50 68 56 69" stroke="#5B3A24" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="title-block">
+      <div class="title-row">
+        <h1 id="pageTitle">Enxoval da Bebê</h1>
+        <button class="title-edit-btn" id="editTitleBtn" title="Editar nome">editar</button>
+      </div>
+      <div class="subtitle">O que já tem, o que ganhou e o que ainda falta comprar</div>
+    </div>
+    <div class="ring-wrap">
+      <svg width="52" height="52" viewBox="0 0 52 52">
+        <circle cx="26" cy="26" r="22" fill="none" stroke="#F3D9B5" stroke-width="6"/>
+        <circle id="ringFg" cx="26" cy="26" r="22" fill="none" stroke="#7C9473" stroke-width="6"
+          stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="138.2"
+          transform="rotate(-90 26 26)" style="transition: stroke-dashoffset .5s ease, stroke .3s ease;"/>
+      </svg>
+      <div class="ring-label">Enxoval<br><strong id="ringPct">0%</strong></div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="active" data-view="dashboard">Painel</button>
+    <button data-view="itens">Itens</button>
+    <button data-view="compras">Lista de compras</button>
+  </nav>
+
+  <!-- ===================== DASHBOARD ===================== -->
+  <section id="view-dashboard" class="view active">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="num" id="statTotal">0</div><div class="lbl">itens cadastrados</div></div>
+      <div class="stat-card sage"><div class="num" id="statCompletos">0</div><div class="lbl">completos</div></div>
+      <div class="stat-card amber"><div class="num" id="statParciais">0</div><div class="lbl">parciais</div></div>
+      <div class="stat-card rose"><div class="num" id="statFaltando">0</div><div class="lbl">faltando comprar</div></div>
+    </div>
+
+    <div class="card">
+      <h2>Por categoria</h2>
+      <div class="paw-divider"><span class="line"></span></div>
+      <div id="catList"></div>
+    </div>
+
+    <div class="card">
+      <h2>Por tamanho</h2>
+      <div class="paw-divider"><span class="line"></span></div>
+      <div class="size-grid" id="sizeGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===================== ITENS ===================== -->
+  <section id="view-itens" class="view">
+    <div class="toolbar">
+      <input type="text" class="search-input" id="searchInput" placeholder="Buscar item...">
+      <select id="filterCategoria"><option value="">Todas categorias</option></select>
+      <select id="filterTamanho"><option value="">Todos tamanhos</option></select>
+      <select id="filterStatus">
+        <option value="">Todos status</option>
+        <option value="completo">Completo</option>
+        <option value="parcial">Parcial</option>
+        <option value="falta">Falta comprar</option>
+      </select>
+      <button class="btn btn-primary" id="addItemBtn">+ Adicionar item</button>
+    </div>
+
+    <div class="card" style="padding: 10px 16px 16px;">
+      <div class="list-head">
+        <span></span><span>Item</span><span>Tamanho</span><span>Tenho / preciso</span><span>Status</span><span></span>
+      </div>
+      <div id="itemList"></div>
+      <div class="empty" id="emptyState" style="display:none;">
+        <div class="emoji">🧸</div>
+        <h3>Nenhum item por aqui ainda</h3>
+        <p>Adicione o primeiro item do enxoval — roupinha, fralda, brinquedo, o que for.</p>
+        <button class="btn btn-primary" id="emptyAddBtn">+ Adicionar item</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== LISTA DE COMPRAS ===================== -->
+  <section id="view-compras" class="view">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <h2>O que falta comprar</h2>
+        <button class="btn btn-ghost" onclick="window.print()">Imprimir / exportar</button>
+      </div>
+      <div class="paw-divider"><span class="line"></span></div>
+      <div id="shopList"></div>
+      <div class="empty" id="shopEmpty" style="display:none;">
+        <div class="emoji">🎉</div>
+        <h3>Está tudo garantido!</h3>
+        <p>Nenhum item pendente por enquanto. Assim que faltar algo, aparece aqui.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<button class="btn btn-primary fab" id="fabAdd"
+  style="position:fixed; bottom:22px; right:22px; width:56px; height:56px; border-radius:50%; font-size:24px; box-shadow:0 8px 20px rgba(91,58,36,.25); display:none; align-items:center; justify-content:center;">+</button>
+
+<!-- Modal: add/edit item -->
+<div class="overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Adicionar item</h2>
+    <form id="itemForm">
+      <div class="field">
+        <label for="fName">Nome do item</label>
+        <input type="text" id="fName" placeholder="Ex: Body manga longa" required>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="fCategoria">Categoria</label>
+          <select id="fCategoria"></select>
+        </div>
+        <div class="field">
+          <label for="fTamanho">Tamanho</label>
+          <select id="fTamanho"></select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="fPreciso">Quantidade necessária</label>
+          <input type="number" id="fPreciso" min="1" value="1" required>
+        </div>
+        <div class="field">
+          <label for="fTenho">Quantidade que já tem</label>
+          <input type="number" id="fTenho" min="0" value="0" required>
+        </div>
+      </div>
+      <div class="field">
+        <label for="fOrigem">Origem</label>
+        <select id="fOrigem">
+          <option value="planejado">Ainda vou providenciar</option>
+          <option value="ganhei">Ganhei de presente</option>
+          <option value="comprei">Comprei</option>
+          <option value="misto">Parte ganhei, parte comprei</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="fNotas">Notas (opcional)</label>
+        <textarea id="fNotas" rows="2" placeholder="Ex: cor, marca, quem deu de presente..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="cancelBtn">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="saveBtn">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  const CATEGORIAS = [
+    { id: 'roupa', label: 'Roupas', icon: '👕' },
+    { id: 'calcado', label: 'Calçados', icon: '👟' },
+    { id: 'higiene', label: 'Higiene', icon: '🧴' },
+    { id: 'quarto', label: 'Quarto e enxoval de cama', icon: '🛏️' },
+    { id: 'alimentacao', label: 'Alimentação', icon: '🍼' },
+    { id: 'brinquedo', label: 'Brinquedos', icon: '🧸' },
+    { id: 'passeio', label: 'Passeio', icon: '🚼' },
+    { id: 'outro', label: 'Outros', icon: '📦' },
+  ];
+  const TAMANHOS = ['RN', 'P', 'M', 'G', 'GG', '1 ano', '2 anos', 'Único'];
+  const ORIGEM_LABEL = { planejado: 'A providenciar', ganhei: 'Ganhei', comprei: 'Comprei', misto: 'Ganhei + comprei' };
+
+  let items = [];
+  let customCategories = [];
+  let settings = { title: 'Enxoval da Bebê' };
+  let editingId = null;
+
+  const $ = (id) => document.getElementById(id);
+
+  function allCategorias() { return CATEGORIAS.concat(customCategories); }
+  function catInfo(id) { return allCategorias().find(c => c.id === id) || CATEGORIAS[CATEGORIAS.length - 1]; }
+
+  function statusOf(item) {
+    if (item.tenho >= item.preciso) return 'completo';
+    if (item.tenho > 0) return 'parcial';
+    return 'falta';
+  }
+
+  // ---------- API (banco de dados via funções Netlify) ----------
+  async function api(url, options) {
+    const res = await fetch(url, options);
+    if (!res.ok) throw new Error('Request failed: ' + res.status);
+    if (res.status === 204) return null;
+    return res.json();
+  }
+
+  async function loadData() {
+    try {
+      items = await api('/api/items');
+    } catch (e) { items = []; showToast('Não consegui carregar os itens agora.'); }
+    try {
+      customCategories = await api('/api/categories');
+    } catch (e) { customCategories = []; }
+    try {
+      const s = await api('/api/settings');
+      if (s && s.title) settings.title = s.title;
+    } catch (e) { /* keep defaults */ }
+  }
+
+  async function createItem(data) {
+    try {
+      const row = await api('/api/items', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      items.push(row);
+      return true;
+    } catch (e) { showToast('Não consegui salvar o item.'); return false; }
+  }
+
+  async function updateItem(id, data) {
+    try {
+      const row = await api('/api/items', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, ...data }),
+      });
+      const idx = items.findIndex(i => i.id === id);
+      if (idx > -1) items[idx] = row;
+      return true;
+    } catch (e) { showToast('Não consegui atualizar o item.'); return false; }
+  }
+
+  async function removeItem(id) {
+    try {
+      await api('/api/items?id=' + id, { method: 'DELETE' });
+      items = items.filter(i => i.id !== id);
+      return true;
+    } catch (e) { showToast('Não consegui remover o item.'); return false; }
+  }
+
+  async function saveCategories(label, icon) {
+    try {
+      const row = await api('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ label, icon }),
+      });
+      customCategories.push(row);
+      return row;
+    } catch (e) { showToast('Não consegui salvar a nova categoria agora.'); return null; }
+  }
+
+  async function saveSettings() {
+    try {
+      await api('/api/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: settings.title }),
+      });
+    } catch (e) { showToast('Não consegui salvar o nome agora.'); }
+  }
+
+  // ---------- Populate selects ----------
+  function fillSelect(sel, options, includeEmpty, emptyLabel) {
+    sel.innerHTML = '';
+    if (includeEmpty) {
+      const o = document.createElement('option');
+      o.value = ''; o.textContent = emptyLabel;
+      sel.appendChild(o);
+    }
+    options.forEach(opt => {
+      const o = document.createElement('option');
+      o.value = opt.value; o.textContent = opt.label;
+      sel.appendChild(o);
+    });
+  }
+
+  function initSelects() {
+    refreshCategorySelects();
+    fillSelect($('fTamanho'), TAMANHOS.map(t => ({ value: t, label: t })), false);
+    fillSelect($('filterTamanho'), TAMANHOS.map(t => ({ value: t, label: t })), true, 'Todos tamanhos');
+  }
+
+  function refreshCategorySelects(selectValue) {
+    const opts = allCategorias().map(c => ({ value: c.id, label: c.icon + '  ' + c.label }));
+    opts.push({ value: '__new__', label: '+ Criar nova categoria' });
+    fillSelect($('fCategoria'), opts, false);
+    if (selectValue) $('fCategoria').value = selectValue;
+
+    fillSelect($('filterCategoria'), allCategorias().map(c => ({ value: c.id, label: c.icon + '  ' + c.label })), true, 'Todas categorias');
+  }
+
+  $('fCategoria').addEventListener('change', async (e) => {
+    if (e.target.value !== '__new__') return;
+    const label = prompt('Nome da nova categoria (ex: Amamentação, Documentos...):');
+    if (!label || !label.trim()) { refreshCategorySelects(CATEGORIAS[0].id); return; }
+    const icon = prompt('Um emoji para representar essa categoria (opcional):', '🏷️') || '🏷️';
+    const row = await saveCategories(label.trim(), icon.trim() || '🏷️');
+    refreshCategorySelects(row ? row.id : CATEGORIAS[0].id);
+    if (row) showToast('Categoria criada');
+  });
+
+  // ---------- Toast ----------
+  let toastTimer;
+  function showToast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  // ---------- Tabs ----------
+  document.querySelectorAll('nav.tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      btn.classList.add('active');
+      $('view-' + btn.dataset.view).classList.add('active');
+      $('fabAdd').style.display = btn.dataset.view === 'itens' ? 'flex' : 'none';
+    });
+  });
+
+  // ---------- Title editing ----------
+  $('editTitleBtn').addEventListener('click', () => {
+    const novo = prompt('Nome a exibir:', settings.title || 'Enxoval da Bebê');
+    if (novo !== null && novo.trim()) {
+      settings.title = novo.trim();
+      $('pageTitle').textContent = settings.title;
+      saveSettings();
+    }
+  });
+
+  // ---------- Modal ----------
+  function openModal(item) {
+    editingId = item ? item.id : null;
+    $('modalTitle').textContent = item ? 'Editar item' : 'Adicionar item';
+    $('fName').value = item ? item.nome : '';
+    $('fCategoria').value = item ? item.categoria : CATEGORIAS[0].id;
+    $('fTamanho').value = item ? item.tamanho : TAMANHOS[0];
+    $('fPreciso').value = item ? item.preciso : 1;
+    $('fTenho').value = item ? item.tenho : 0;
+    $('fOrigem').value = item ? item.origem : 'planejado';
+    $('fNotas').value = item ? (item.notas || '') : '';
+    $('modalOverlay').classList.add('open');
+    setTimeout(() => $('fName').focus(), 50);
+  }
+  function closeModal() { $('modalOverlay').classList.remove('open'); editingId = null; }
+
+  $('addItemBtn').addEventListener('click', () => openModal(null));
+  $('emptyAddBtn').addEventListener('click', () => openModal(null));
+  $('fabAdd').addEventListener('click', () => openModal(null));
+  $('cancelBtn').addEventListener('click', closeModal);
+  $('modalOverlay').addEventListener('click', (e) => { if (e.target.id === 'modalOverlay') closeModal(); });
+
+  $('itemForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nome = $('fName').value.trim();
+    if (!nome) return;
+    const data = {
+      nome,
+      categoria: $('fCategoria').value,
+      tamanho: $('fTamanho').value,
+      preciso: Math.max(1, parseInt($('fPreciso').value, 10) || 1),
+      tenho: Math.max(0, parseInt($('fTenho').value, 10) || 0),
+      origem: $('fOrigem').value,
+      notas: $('fNotas').value.trim(),
+    };
+    let ok;
+    if (editingId) {
+      ok = await updateItem(editingId, data);
+      if (ok) showToast('Item atualizado');
+    } else {
+      ok = await createItem(data);
+      if (ok) showToast('Item adicionado');
+    }
+    if (ok) closeModal();
+    renderAll();
+  });
+
+  async function deleteItem(id) {
+    const it = items.find(i => i.id === id);
+    if (!it) return;
+    if (!confirm('Remover "' + it.nome + '" do enxoval?')) return;
+    const ok = await removeItem(id);
+    if (ok) showToast('Item removido');
+    renderAll();
+  }
+
+  // ---------- Render: Dashboard ----------
+  function renderDashboard() {
+    let totalPreciso = 0, totalTenho = 0;
+    let completos = 0, parciais = 0, faltando = 0;
+    items.forEach(it => {
+      totalPreciso += it.preciso;
+      totalTenho += Math.min(it.tenho, it.preciso);
+      const s = statusOf(it);
+      if (s === 'completo') completos++;
+      else if (s === 'parcial') parciais++;
+      else faltando++;
+    });
+    const pct = totalPreciso ? Math.round((totalTenho / totalPreciso) * 100) : 0;
+
+    $('statTotal').textContent = items.length;
+    $('statCompletos').textContent = completos;
+    $('statParciais').textContent = parciais;
+    $('statFaltando').textContent = faltando;
+
+    const CIRC = 138.2;
+    $('ringFg').style.strokeDashoffset = CIRC - (CIRC * pct / 100);
+    $('ringFg').style.stroke = pct >= 80 ? '#7C9473' : pct >= 40 ? '#D9A441' : '#D46A5D';
+    $('ringPct').textContent = pct + '%';
+
+    // Category breakdown
+    const catList = $('catList');
+    catList.innerHTML = '';
+    allCategorias().forEach(cat => {
+      const catItems = items.filter(i => i.categoria === cat.id);
+      if (!catItems.length) return;
+      let p = 0, t = 0;
+      catItems.forEach(i => { p += i.preciso; t += Math.min(i.tenho, i.preciso); });
+      const cpct = p ? Math.round((t / p) * 100) : 0;
+      const row = document.createElement('div');
+      row.className = 'cat-row';
+      row.innerHTML =
+        '<div class="cat-icon">' + cat.icon + '</div>' +
+        '<div class="cat-info">' +
+          '<div class="cat-name">' + cat.label + '</div>' +
+          '<div class="cat-count">' + catItems.length + ' item(ns) · ' + t + ' de ' + p + ' peças</div>' +
+          '<div class="bar-track"><div class="bar-fill' + (cpct < 40 ? ' low' : cpct < 80 ? ' warn' : '') + '" style="width:' + cpct + '%"></div></div>' +
+        '</div>';
+      catList.appendChild(row);
+    });
+    if (!catList.children.length) {
+      catList.innerHTML = '<p style="color:var(--ink-soft); font-size:14px;">Adicione itens para ver o progresso por categoria.</p>';
+    }
+
+    // Size breakdown
+    const sizeGrid = $('sizeGrid');
+    sizeGrid.innerHTML = '';
+    TAMANHOS.forEach(tam => {
+      const tamItems = items.filter(i => i.tamanho === tam);
+      if (!tamItems.length) return;
+      let p = 0, t = 0;
+      tamItems.forEach(i => { p += i.preciso; t += Math.min(i.tenho, i.preciso); });
+      const tpct = p ? Math.round((t / p) * 100) : 0;
+      const color = tpct >= 80 ? 'var(--sage)' : tpct >= 40 ? 'var(--amber)' : 'var(--rose)';
+      const card = document.createElement('div');
+      card.className = 'size-card';
+      card.innerHTML =
+        '<div class="size-label">' + tam + '</div>' +
+        '<div class="size-pct" style="color:' + color + '">' + tpct + '%</div>' +
+        '<div class="size-count">' + tamItems.length + ' item(ns)</div>';
+      sizeGrid.appendChild(card);
+    });
+    if (!sizeGrid.children.length) {
+      sizeGrid.innerHTML = '<p style="color:var(--ink-soft); font-size:14px;">Nenhum item cadastrado ainda.</p>';
+    }
+  }
+
+  // ---------- Render: Item list ----------
+  function renderItemList() {
+    const search = $('searchInput').value.trim().toLowerCase();
+    const fc = $('filterCategoria').value;
+    const ft = $('filterTamanho').value;
+    const fs = $('filterStatus').value;
+
+    const filtered = items.filter(it => {
+      if (search && !it.nome.toLowerCase().includes(search)) return false;
+      if (fc && it.categoria !== fc) return false;
+      if (ft && it.tamanho !== ft) return false;
+      if (fs && statusOf(it) !== fs) return false;
+      return true;
+    });
+
+    const list = $('itemList');
+    list.innerHTML = '';
+    $('emptyState').style.display = items.length === 0 ? 'block' : 'none';
+
+    if (items.length > 0 && filtered.length === 0) {
+      list.innerHTML = '<p style="text-align:center; color:var(--ink-soft); padding:24px 0;">Nenhum item corresponde ao filtro.</p>';
+      return;
+    }
+
+    filtered.forEach(it => {
+      const cat = catInfo(it.categoria);
+      const s = statusOf(it);
+      const sLabel = s === 'completo' ? 'Completo' : s === 'parcial' ? 'Parcial' : 'Falta comprar';
+      const row = document.createElement('div');
+      row.className = 'item-row';
+      row.innerHTML =
+        '<div class="cat-icon" style="width:34px;height:34px;font-size:15px;">' + cat.icon + '</div>' +
+        '<div>' +
+          '<div class="name">' + escapeHtml(it.nome) + '</div>' +
+          '<div class="meta">' + cat.label + ' · ' + ORIGEM_LABEL[it.origem] + (it.notas ? ' · ' + escapeHtml(it.notas) : '') + '</div>' +
+          '<div class="meta-mobile"></div>' +
+        '</div>' +
+        '<div class="badge size-col">' + it.tamanho + '</div>' +
+        '<div class="qty-block qty-col">' +
+          '<span class="qty-text">' + it.tenho + ' de ' + it.preciso + '</span>' +
+          '<div class="bar-track"><div class="bar-fill' + (s === 'falta' ? ' low' : s === 'parcial' ? ' warn' : '') + '" style="width:' + Math.min(100, Math.round((it.tenho / it.preciso) * 100)) + '%"></div></div>' +
+        '</div>' +
+        '<div class="status-pill ' + s + '">' + sLabel + '</div>' +
+        '<div class="row-actions">' +
+          '<button class="btn-icon" data-edit="' + it.id + '" title="Editar">✏️</button>' +
+          '<button class="btn-icon" data-del="' + it.id + '" title="Remover">🗑️</button>' +
+        '</div>';
+      list.appendChild(row);
+    });
+
+    list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => {
+      const it = items.find(i => i.id === Number(b.dataset.edit));
+      if (it) openModal(it);
+    }));
+    list.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => deleteItem(Number(b.dataset.del))));
+  }
+
+  function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  // ---------- Render: Shopping list ----------
+  function renderShopList() {
+    const pending = items.filter(it => it.tenho < it.preciso);
+    const container = $('shopList');
+    container.innerHTML = '';
+    $('shopEmpty').style.display = pending.length === 0 ? 'block' : 'none';
+
+    allCategorias().forEach(cat => {
+      const catPending = pending.filter(i => i.categoria === cat.id);
+      if (!catPending.length) return;
+      const group = document.createElement('div');
+      group.className = 'shop-group';
+      let html = '<h3>' + cat.icon + ' ' + cat.label + '</h3>';
+      catPending.forEach(it => {
+        const falta = it.preciso - it.tenho;
+        html += '<div class="shop-item">' +
+          '<div><div class="sname">' + escapeHtml(it.nome) + '</div><div class="ssize">Tamanho ' + it.tamanho + (it.notas ? ' · ' + escapeHtml(it.notas) : '') + '</div></div>' +
+          '<div class="sneed">faltam ' + falta + '</div>' +
+        '</div>';
+      });
+      group.innerHTML = html;
+      container.appendChild(group);
+    });
+  }
+
+  function renderAll() {
+    renderDashboard();
+    renderItemList();
+    renderShopList();
+  }
+
+  ['searchInput', 'filterCategoria', 'filterTamanho', 'filterStatus'].forEach(id => {
+    $(id).addEventListener('input', renderItemList);
+    $(id).addEventListener('change', renderItemList);
+  });
+
+  // ---------- Init ----------
+  async function init() {
+    await loadData();
+    initSelects();
+    $('pageTitle').textContent = settings.title || 'Enxoval da Bebê';
+    renderAll();
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>
