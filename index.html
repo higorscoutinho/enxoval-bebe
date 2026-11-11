@@ -106,7 +106,7 @@
     display: flex;
     align-items: center;
     gap: 11px;
-    padding: 22px 20px 18px;
+    padding: calc(22px + env(safe-area-inset-top, 0px)) 20px 18px;
   }
   .sidebar-brand .mascot-wrap {
     width: 42px; height: 42px;
@@ -203,12 +203,13 @@
   }
 
   .topbar {
-    height: var(--topbar-h);
+    min-height: var(--topbar-h);
+    height: calc(var(--topbar-h) + env(safe-area-inset-top, 0px));
     flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 0 28px;
+    padding: env(safe-area-inset-top, 0px) 28px 0;
     background: var(--cream);
     position: sticky;
     top: 0;
@@ -237,7 +238,7 @@
     .main { margin-left: 0; }
     .hamburger { display: block; }
     .content { padding: 4px 16px 60px; }
-    .topbar { padding: 0 14px; }
+    .topbar { padding: env(safe-area-inset-top, 0px) 14px 0; }
   }
 
   .view { display: none; }
@@ -772,7 +773,6 @@
       <button class="side-link" data-view="catalogo"><span class="ic">📋</span> Catálogo rápido</button>
       <button class="side-link" data-view="tenho"><span class="ic">✅</span> O que já tenho</button>
       <button class="side-link" data-view="compras"><span class="ic">🛒</span> Lista de compras</button>
-      <button class="side-link" data-view="orcamento"><span class="ic">💰</span> Orçamento</button>
       <button class="side-link" data-view="imprimir"><span class="ic">🖨️</span> Imprimir</button>
     </nav>
 
@@ -878,7 +878,7 @@
           <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px;">
             <div>
               <h2>Catálogo rápido</h2>
-              <div class="card-sub">Uma base pronta com quantidades sugeridas (pesquisadas) para um enxoval completo. Adicione tudo de uma vez e depois ajuste — ou vá item por item.</div>
+              <div class="card-sub">Uma lista de itens comuns de enxoval, pronta para você adicionar e definir a quantidade que achar melhor. Adicione tudo de uma vez e depois ajuste — ou vá item por item.</div>
             </div>
             <button class="btn btn-primary" id="addAllCatalogBtn">✨ Adicionar lista completa</button>
           </div>
@@ -918,26 +918,6 @@
             <h3>Está tudo garantido!</h3>
             <p>Nenhum item pendente por enquanto. Assim que faltar algo, aparece aqui.</p>
           </div>
-        </div>
-      </section>
-
-      <!-- ===================== ORÇAMENTO ===================== -->
-      <section id="view-orcamento" class="view">
-        <div class="stat-grid">
-          <div class="stat-card"><div class="num" id="budTotal">R$ 0</div><div class="lbl">valor estimado do enxoval</div></div>
-          <div class="stat-card sage"><div class="num" id="budGarantido">R$ 0</div><div class="lbl">já garantido</div></div>
-          <div class="stat-card rose"><div class="num" id="budFalta">R$ 0</div><div class="lbl">ainda falta investir</div></div>
-          <div class="stat-card amber"><div class="num" id="budEconomia">R$ 0</div><div class="lbl">economizado em presentes</div></div>
-        </div>
-
-        <div class="tip-box">
-          💡 <span>Os valores são estimativas que você define ao cadastrar cada item (campo "Valor estimado"). Ajuste conforme for pesquisando preços — isso não afeta o controle de quantidades.</span>
-        </div>
-
-        <div class="card" style="margin-top:18px;">
-          <h2>Quanto falta investir, por categoria</h2>
-          <div class="card-sub">Categorias ordenadas pelo que mais pesa no bolso</div>
-          <div id="budgetList"></div>
         </div>
       </section>
 
@@ -1306,7 +1286,6 @@
     catalogo: 'Catálogo rápido',
     tenho: 'O que já tenho',
     compras: 'Lista de compras',
-    orcamento: 'Orçamento',
     imprimir: 'Imprimir relatório',
   };
 
@@ -1679,7 +1658,7 @@
         html += '<div class="catalogo-item">' +
           '<div>' +
             '<div class="ci-name">' + escapeHtml(ci.nome) + (ci.prioridade === 'essencial' ? ' <span class="badge priority-essencial">essencial</span>' : '') + '</div>' +
-            '<div class="ci-sub">Tamanho ' + ci.tamanho + ' · sugestão: ' + ci.qtd + ' un.</div>' +
+            '<div class="ci-sub">Tamanho ' + ci.tamanho + '</div>' +
           '</div>' +
           '<button class="btn btn-sm ' + (exists ? 'btn-ghost' : 'btn-primary') + '" data-cat="' + group.categoria + '" data-idx="' + idx + '" ' + (exists ? 'disabled' : '') + '>' +
             (exists ? '✓ já na lista' : '+ Adicionar') +
@@ -1698,7 +1677,7 @@
         btn.textContent = 'adicionando...';
         const row = await createItemRemote({
           nome: ci.nome, categoria: group.categoria, tamanho: ci.tamanho,
-          preciso: ci.qtd, tenho: 0, prioridade: ci.prioridade, valor: 0,
+          preciso: 1, tenho: 0, prioridade: ci.prioridade, valor: 0,
           origem: 'planejado', quemDeu: '', agradecido: false, notas: '',
         });
         if (row) {
@@ -1720,7 +1699,7 @@
       });
     });
     if (!pending.length) { showToast('Você já tem todos os itens do catálogo na sua lista'); return; }
-    if (!confirm('Isso vai adicionar ' + pending.length + ' item(ns) sugerido(s) à sua lista (os que já existem são pulados). Você pode editar ou remover qualquer um depois. Continuar?')) return;
+    if (!confirm('Isso vai adicionar ' + pending.length + ' item(ns) à sua lista, com quantidade 1 cada (os que já existem são pulados). Você pode ajustar a quantidade de cada um depois. Continuar?')) return;
 
     const btn = $('addAllCatalogBtn');
     btn.disabled = true;
@@ -1729,7 +1708,7 @@
       btn.textContent = 'Adicionando... (' + (count + 1) + '/' + pending.length + ')';
       const row = await createItemRemote({
         nome: ci.nome, categoria: group.categoria, tamanho: ci.tamanho,
-        preciso: ci.qtd, tenho: 0, prioridade: ci.prioridade, valor: 0,
+        preciso: 1, tenho: 0, prioridade: ci.prioridade, valor: 0,
         origem: 'planejado', quemDeu: '', agradecido: false, notas: '',
       });
       if (row) count++;
@@ -1881,64 +1860,12 @@
     }
   }
 
-  // ---------- Render: Orçamento ----------
-  function renderOrcamento() {
-    let totalEstimado = 0, totalGarantido = 0, totalFalta = 0, economia = 0;
-    const porCategoria = {};
-
-    items.forEach(it => {
-      const preciso = Number(it.preciso) || 1;
-      const tenho = Number(it.tenho) || 0;
-      const valor = valorOf(it);
-      totalEstimado += preciso * valor;
-      totalGarantido += Math.min(tenho, preciso) * valor;
-      totalFalta += Math.max(0, preciso - tenho) * valor;
-      if (it.origem === 'ganhei') economia += Math.min(tenho, preciso) * valor;
-
-      const remaining = Math.max(0, preciso - tenho) * valor;
-      if (remaining > 0) {
-        porCategoria[it.categoria] = (porCategoria[it.categoria] || 0) + remaining;
-      }
-    });
-
-    $('budTotal').textContent = formatMoney(totalEstimado);
-    $('budGarantido').textContent = formatMoney(totalGarantido);
-    $('budFalta').textContent = formatMoney(totalFalta);
-    $('budEconomia').textContent = formatMoney(economia);
-
-    const list = $('budgetList');
-    list.innerHTML = '';
-    const entries = Object.keys(porCategoria)
-      .map(id => ({ cat: catInfo(id), value: porCategoria[id] }))
-      .sort((a, b) => b.value - a.value);
-
-    const maxValue = entries.length ? entries[0].value : 0;
-
-    entries.forEach(entry => {
-      const pct = maxValue ? Math.round((entry.value / maxValue) * 100) : 0;
-      const row = document.createElement('div');
-      row.className = 'budget-bar-row';
-      row.innerHTML =
-        '<div class="bb-icon">' + entry.cat.icon + '</div>' +
-        '<div class="bb-info">' +
-          '<div class="bb-name">' + escapeHtml(entry.cat.label) + '</div>' +
-          '<div class="bb-track"><div class="bb-fill" style="width:' + pct + '%"></div></div>' +
-        '</div>' +
-        '<div class="bb-value">' + formatMoney(entry.value) + '</div>';
-      list.appendChild(row);
-    });
-    if (!entries.length) {
-      list.innerHTML = '<p style="color:var(--ink-soft); font-size:14px;">Nenhum valor estimado cadastrado ainda. Defina um "Valor estimado" ao criar ou editar um item para ver o orçamento aqui.</p>';
-    }
-  }
-
   function renderAll() {
     renderDashboard();
     renderItemList();
     renderCatalogo();
     renderTenho();
     renderShopList();
-    renderOrcamento();
     renderPrint();
   }
 
