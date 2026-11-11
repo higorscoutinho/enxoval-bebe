@@ -2,8 +2,22 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Enxoval da Bebê</title>
+
+<!-- Favicon -->
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+
+<!-- iPhone: ícone e comportamento de tela inicial (abre em tela cheia, sem barra do Safari) -->
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Enxoval">
+<meta name="theme-color" content="#C1793D">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -25,10 +39,16 @@
     --rose: #D46A5D;
     --rose-bg: #FBE7E4;
     --line: #EEE1CC;
+    --sidebar-bg: #4A2F1F;
+    --sidebar-bg-2: #3C2518;
+    --sidebar-ink: #F3E3CE;
+    --sidebar-ink-soft: #C9A982;
     --radius-lg: 28px;
     --radius-md: 18px;
     --radius-sm: 10px;
     --shadow: 0 6px 20px rgba(91, 58, 36, 0.08);
+    --sidebar-w: 248px;
+    --topbar-h: 64px;
   }
 
   * { box-sizing: border-box; }
@@ -51,91 +71,180 @@
     font-family: 'Nunito', sans-serif;
     cursor: pointer;
     border: none;
+    background: none;
   }
 
-  button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
+  button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visible {
     outline: 3px solid var(--honey-light);
     outline-offset: 2px;
   }
 
   a { color: var(--honey-dark); }
 
-  .wrap {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 20px 20px 80px;
+  /* ================= APP SHELL ================= */
+
+  .app-shell {
+    display: flex;
+    min-height: 100vh;
   }
 
-  /* ---------- Header ---------- */
-  header.top {
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: linear-gradient(180deg, var(--sidebar-bg) 0%, var(--sidebar-bg-2) 100%);
+    color: var(--sidebar-ink);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 40;
+    transition: transform .25s ease;
+  }
+
+  .sidebar-brand {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 20px 4px 8px;
-    flex-wrap: wrap;
+    gap: 11px;
+    padding: 22px 20px 18px;
   }
-
-  .mascot { flex-shrink: 0; }
-
-  .title-block { flex: 1; min-width: 200px; }
-
-  .title-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-
-  .title-row h1 { font-size: 26px; font-weight: 600; }
-
-  .title-edit-btn {
-    background: none;
-    color: var(--ink-soft);
-    font-size: 13px;
-    padding: 2px 6px;
-    border-radius: var(--radius-sm);
+  .sidebar-brand .mascot-wrap {
+    width: 42px; height: 42px;
+    flex-shrink: 0;
+    border-radius: 13px;
+    background: rgba(255,255,255,.08);
+    display: flex; align-items: center; justify-content: center;
   }
-  .title-edit-btn:hover { background: var(--honey-light); color: var(--brown); }
+  .sidebar-brand h1 {
+    font-size: 17px;
+    color: #FBF0DB;
+    line-height: 1.15;
+  }
+  .sidebar-brand .brand-edit {
+    color: var(--sidebar-ink-soft);
+    font-size: 11.5px;
+    padding: 1px 0;
+  }
+  .sidebar-brand .brand-edit:hover { color: #fff; }
 
-  .subtitle { color: var(--ink-soft); font-size: 14px; margin-top: 2px; }
-
-  .ring-wrap {
+  .side-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    flex: 1;
+    overflow-y: auto;
+  }
+  .side-link {
     display: flex;
     align-items: center;
     gap: 12px;
-    background: var(--card);
-    border-radius: 999px;
-    padding: 8px 18px 8px 8px;
-    box-shadow: var(--shadow);
-  }
-
-  .ring-label { font-size: 13px; color: var(--ink-soft); line-height: 1.3; }
-  .ring-label strong { display: block; font-family: 'Fredoka'; font-size: 20px; color: var(--brown); }
-
-  /* ---------- Tabs ---------- */
-  nav.tabs {
-    display: flex;
-    gap: 6px;
-    margin: 18px 0 22px;
-    background: var(--honey-light);
-    padding: 6px;
-    border-radius: 999px;
-    width: fit-content;
-    max-width: 100%;
-    overflow-x: auto;
-  }
-  nav.tabs button {
-    background: transparent;
-    color: var(--brown);
-    padding: 9px 18px;
-    border-radius: 999px;
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    color: var(--sidebar-ink-soft);
     font-weight: 700;
-    font-size: 14px;
-    white-space: nowrap;
-    transition: background .15s ease, color .15s ease;
+    font-size: 14.5px;
+    text-align: left;
+    width: 100%;
   }
-  nav.tabs button.active { background: var(--honey); color: #fff; }
-  nav.tabs button:not(.active):hover { background: rgba(255,255,255,.5); }
+  .side-link .ic { font-size: 17px; width: 20px; text-align: center; flex-shrink: 0; }
+  .side-link:hover { background: rgba(255,255,255,.06); color: #fff; }
+  .side-link.active { background: var(--honey); color: #fff; }
+
+  .side-nav-label {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--sidebar-ink-soft);
+    opacity: .6;
+    padding: 14px 14px 4px;
+  }
+
+  .sidebar-foot {
+    padding: 16px;
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+  .sidebar-ring-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .sidebar-ring-label { font-size: 12px; color: var(--sidebar-ink-soft); line-height: 1.3; }
+  .sidebar-ring-label strong { display: block; font-family: 'Fredoka'; font-size: 18px; color: #fff; }
+
+  .sidebar-foot-actions { display: flex; gap: 8px; }
+  .sidebar-foot-actions button {
+    flex: 1;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--sidebar-ink-soft);
+    padding: 7px 6px;
+    border-radius: var(--radius-sm);
+    background: rgba(255,255,255,.06);
+  }
+  .sidebar-foot-actions button:hover { background: rgba(255,255,255,.12); color: #fff; }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.4);
+    z-index: 39;
+  }
+  .sidebar-overlay.open { display: block; }
+
+  /* ---------- Main ---------- */
+  .main {
+    flex: 1;
+    margin-left: var(--sidebar-w);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    height: var(--topbar-h);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 28px;
+    background: var(--cream);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .topbar h1 { font-size: 21px; flex: 1; min-width: 0; }
+  .hamburger {
+    display: none;
+    font-size: 20px;
+    color: var(--brown);
+    padding: 6px;
+    border-radius: var(--radius-sm);
+  }
+  .hamburger:hover { background: var(--honey-light); }
+
+  .content {
+    flex: 1;
+    padding: 4px 28px 60px;
+    max-width: 1180px;
+    width: 100%;
+  }
+
+  @media (max-width: 920px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .hamburger { display: block; }
+    .content { padding: 4px 16px 60px; }
+    .topbar { padding: 0 14px; }
+  }
 
   .view { display: none; }
   .view.active { display: block; }
 
-  /* ---------- Cards ---------- */
+  /* ================= SHARED COMPONENTS ================= */
+
   .card {
     background: var(--card);
     border-radius: var(--radius-lg);
@@ -143,7 +252,8 @@
     box-shadow: var(--shadow);
     margin-bottom: 18px;
   }
-  .card h2 { font-size: 18px; margin-bottom: 14px; }
+  .card h2 { font-size: 18px; margin-bottom: 4px; }
+  .card .card-sub { color: var(--ink-soft); font-size: 13px; margin-bottom: 14px; }
 
   .paw-divider {
     display: flex;
@@ -154,7 +264,116 @@
   }
   .paw-divider .line { flex: 1; height: 1px; background: var(--line); }
 
-  /* ---------- Dashboard: category bars ---------- */
+  .bar-track {
+    height: 8px;
+    background: var(--honey-light);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    background: var(--sage);
+    border-radius: 999px;
+    transition: width .4s ease;
+  }
+  .bar-fill.warn { background: var(--amber); }
+  .bar-fill.low { background: var(--rose); }
+
+  .btn {
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--honey); color: #fff; }
+  .btn-primary:hover { background: var(--honey-dark); }
+  .btn-ghost { background: var(--honey-light); color: var(--brown); }
+  .btn-ghost:hover { background: #ecc98c; }
+  .btn-sm { padding: 7px 14px; font-size: 12.5px; }
+  .btn-text { background: none; color: var(--ink-soft); padding: 6px 8px; }
+  .btn-text:hover { color: var(--rose); }
+  .btn-icon { background: none; padding: 6px; color: var(--ink-soft); font-size: 15px; border-radius: var(--radius-sm); }
+  .btn-icon:hover { background: var(--honey-light); color: var(--brown); }
+  .btn[disabled] { opacity: .5; cursor: default; pointer-events: none; }
+
+  select, input[type="text"], input[type="number"], input[type="file"], textarea {
+    font-family: 'Nunito';
+    border: 2px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    font-size: 14px;
+    background: #fff;
+    color: var(--ink);
+  }
+  select { min-width: 130px; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--honey-light);
+    color: var(--brown);
+    white-space: nowrap;
+    width: fit-content;
+  }
+  .badge.priority-essencial { background: var(--rose-bg); color: var(--rose); }
+  .badge.priority-desejavel { background: var(--line); color: var(--ink-soft); }
+  .badge.thanks-pending { background: var(--amber-bg); color: var(--amber); }
+  .badge.thanks-done { background: var(--sage-bg); color: var(--sage); }
+
+  .toast {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--brown);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity .25s ease, transform .25s ease;
+    pointer-events: none;
+    z-index: 60;
+    max-width: 90vw;
+    text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .empty {
+    text-align: center;
+    padding: 50px 20px;
+  }
+  .empty .emoji { font-size: 44px; }
+  .empty h3 { margin: 14px 0 6px; }
+  .empty p { color: var(--ink-soft); max-width: 360px; margin: 0 auto 18px; font-size: 14.5px; }
+
+  /* ================= DASHBOARD ================= */
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .stat-card {
+    background: var(--card);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  .stat-card .num { font-family: 'Fredoka'; font-size: 26px; color: var(--brown); }
+  .stat-card .lbl { font-size: 12.5px; color: var(--ink-soft); font-weight: 700; margin-top: 2px; }
+  .stat-card.sage .num { color: var(--sage); }
+  .stat-card.rose .num { color: var(--rose); }
+  .stat-card.amber .num { color: var(--amber); }
+
   .cat-row {
     display: flex;
     align-items: center;
@@ -174,63 +393,76 @@
   .cat-info { flex: 1; min-width: 0; }
   .cat-name { font-weight: 700; font-size: 14.5px; color: var(--brown); }
   .cat-count { font-size: 12.5px; color: var(--ink-soft); }
-  .bar-track {
-    height: 8px;
+  .cat-row .bar-track { margin-top: 5px; }
+
+  /* Timeline by size */
+  .timeline-scroll {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    padding: 6px 2px 14px;
+  }
+  .timeline-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 84px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .timeline-stage::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: -50%;
+    width: 100%;
+    height: 3px;
+    background: var(--line);
+    z-index: 0;
+  }
+  .timeline-stage:first-child::before { display: none; }
+  .timeline-circle {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    background: var(--line);
+    position: relative;
+    z-index: 1;
+    border: 3px solid var(--card);
+  }
+  .timeline-circle.sage { background: var(--sage); }
+  .timeline-circle.warn { background: var(--amber); }
+  .timeline-circle.low { background: var(--rose); }
+  .timeline-circle.empty-stage { background: var(--line); color: var(--ink-soft); }
+  .timeline-label { font-family: 'Fredoka'; font-size: 13px; color: var(--brown); margin-top: 6px; }
+  .timeline-sub { font-size: 11px; color: var(--ink-soft); }
+
+  /* Activity feed */
+  .activity-row {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: flex-start;
+  }
+  .activity-row:last-child { border-bottom: none; }
+  .activity-ic {
+    width: 32px; height: 32px;
+    border-radius: 10px;
     background: var(--honey-light);
-    border-radius: 999px;
-    overflow: hidden;
-    margin-top: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
   }
-  .bar-fill {
-    height: 100%;
-    background: var(--sage);
-    border-radius: 999px;
-    transition: width .4s ease;
-  }
-  .bar-fill.warn { background: var(--amber); }
-  .bar-fill.low { background: var(--rose); }
+  .activity-text { font-size: 13.5px; color: var(--ink); }
+  .activity-text strong { color: var(--brown); }
+  .activity-time { font-size: 11.5px; color: var(--ink-soft); margin-top: 2px; }
 
-  /* ---------- Size grid ---------- */
-  .size-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 12px;
-  }
-  .size-card {
-    border: 2px solid var(--line);
-    border-radius: var(--radius-md);
-    padding: 14px 12px;
-    text-align: center;
-  }
-  .size-card .size-label {
-    font-family: 'Fredoka';
-    font-weight: 600;
-    color: var(--brown);
-    font-size: 15px;
-  }
-  .size-card .size-pct { font-size: 22px; font-weight: 800; margin: 4px 0 2px; }
-  .size-card .size-count { font-size: 12px; color: var(--ink-soft); }
+  /* ================= ITENS ================= */
 
-  /* ---------- Stat pills ---------- */
-  .stat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
-    margin-bottom: 18px;
-  }
-  .stat-card {
-    background: var(--card);
-    border-radius: var(--radius-md);
-    padding: 16px 18px;
-    box-shadow: var(--shadow);
-  }
-  .stat-card .num { font-family: 'Fredoka'; font-size: 28px; color: var(--brown); }
-  .stat-card .lbl { font-size: 13px; color: var(--ink-soft); font-weight: 700; margin-top: 2px; }
-  .stat-card.sage .num { color: var(--sage); }
-  .stat-card.rose .num { color: var(--rose); }
-  .stat-card.amber .num { color: var(--amber); }
-
-  /* ---------- Toolbar ---------- */
   .toolbar {
     display: flex;
     gap: 10px;
@@ -238,56 +470,34 @@
     align-items: center;
     margin-bottom: 16px;
   }
-  select, input[type="text"], input[type="number"], textarea {
-    font-family: 'Nunito';
-    border: 2px solid var(--line);
-    border-radius: var(--radius-sm);
-    padding: 9px 12px;
-    font-size: 14px;
-    background: #fff;
-    color: var(--ink);
-  }
-  select { min-width: 130px; }
   .search-input { flex: 1; min-width: 160px; }
 
-  .btn {
-    padding: 10px 18px;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 14px;
+  .list-head {
+    display: grid;
+    grid-template-columns: 40px 1.7fr 90px 90px 1.2fr 115px 70px;
+    gap: 12px;
+    padding: 0 6px 8px;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    border-bottom: 2px solid var(--line);
   }
-  .btn-primary { background: var(--honey); color: #fff; }
-  .btn-primary:hover { background: var(--honey-dark); }
-  .btn-ghost { background: var(--honey-light); color: var(--brown); }
-  .btn-ghost:hover { background: #ecc98c; }
-  .btn-text { background: none; color: var(--ink-soft); padding: 6px 8px; }
-  .btn-text:hover { color: var(--rose); }
-  .btn-icon { background: none; padding: 6px; color: var(--ink-soft); font-size: 15px; border-radius: var(--radius-sm); }
-  .btn-icon:hover { background: var(--honey-light); color: var(--brown); }
 
-  /* ---------- Item list ---------- */
   .item-row {
     display: grid;
-    grid-template-columns: 40px 1.6fr 100px 1.3fr 110px 70px;
+    grid-template-columns: 40px 1.7fr 90px 90px 1.2fr 115px 70px;
     align-items: center;
     gap: 12px;
     padding: 12px 6px;
     border-bottom: 1px solid var(--line);
   }
   .item-row:last-child { border-bottom: none; }
-  .item-row .name { font-weight: 700; color: var(--brown); font-size: 14.5px; }
+  .item-row .name { font-weight: 700; color: var(--brown); font-size: 14.5px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .item-row .meta { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
-  .badge {
-    display: inline-block;
-    font-size: 11.5px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 999px;
-    background: var(--honey-light);
-    color: var(--brown);
-    white-space: nowrap;
-    width: fit-content;
-  }
+  .item-row .meta .valor-tag { color: var(--honey-dark); font-weight: 700; }
+
   .qty-block { display: flex; flex-direction: column; gap: 4px; }
   .qty-text { font-size: 12.5px; color: var(--ink-soft); font-weight: 700; }
   .status-pill {
@@ -303,59 +513,114 @@
   .status-pill.falta { background: var(--rose-bg); color: var(--rose); }
   .row-actions { display: flex; gap: 2px; justify-content: flex-end; }
 
-  .list-head {
-    display: grid;
-    grid-template-columns: 40px 1.6fr 100px 1.3fr 110px 70px;
-    gap: 12px;
-    padding: 0 6px 8px;
-    font-size: 11.5px;
-    font-weight: 800;
-    color: var(--ink-soft);
-    text-transform: uppercase;
-    letter-spacing: .03em;
-    border-bottom: 2px solid var(--line);
+  @media (max-width: 760px) {
+    .item-row, .list-head { grid-template-columns: 34px 1fr 78px 52px; }
+    .list-head span:nth-child(3), .list-head span:nth-child(4), .list-head span:nth-child(5),
+    .item-row .tamanho-col, .item-row .prior-col, .item-row .qty-col { display: none; }
+    .row-actions { flex-direction: column; gap: 0; }
   }
 
-  @media (max-width: 720px) {
-    .item-row, .list-head { grid-template-columns: 34px 1fr 90px; }
-    .list-head span:nth-child(4), .list-head span:nth-child(5),
-    .item-row .size-col, .item-row .qty-col { display: none; }
-    .item-row .name .meta-mobile { display: block; font-size: 11.5px; color: var(--ink-soft); margin-top: 4px; }
-  }
+  /* ================= CATÁLOGO RÁPIDO ================= */
 
-  /* ---------- Empty state ---------- */
-  .empty {
-    text-align: center;
-    padding: 50px 20px;
+  .catalogo-group { margin-bottom: 20px; }
+  .catalogo-group h3 {
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+    color: var(--brown);
   }
-  .empty .emoji { font-size: 44px; }
-  .empty h3 { margin: 14px 0 6px; }
-  .empty p { color: var(--ink-soft); max-width: 360px; margin: 0 auto 18px; font-size: 14.5px; }
+  .catalogo-group h3 .cg-title { display: flex; align-items: center; gap: 8px; }
+  .catalogo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+  }
+  .catalogo-item .ci-name { font-weight: 700; color: var(--brown); font-size: 14px; }
+  .catalogo-item .ci-sub { font-size: 12px; color: var(--ink-soft); }
 
-  /* ---------- Shopping list ---------- */
+  /* ================= LISTA DE COMPRAS ================= */
+
   .shop-group { margin-bottom: 22px; }
   .shop-group h3 {
     font-size: 15px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
     margin-bottom: 10px;
     color: var(--brown);
   }
+  .shop-group h3 .sg-title { display: flex; align-items: center; gap: 8px; }
+  .shop-group h3 .sg-total { font-size: 12.5px; color: var(--ink-soft); font-weight: 700; }
   .shop-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
     padding: 10px 14px;
     background: var(--rose-bg);
     border-radius: var(--radius-sm);
     margin-bottom: 8px;
   }
-  .shop-item .sname { font-weight: 700; color: var(--brown); font-size: 14px; }
+  .shop-item .sname { font-weight: 700; color: var(--brown); font-size: 14px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .shop-item .ssize { font-size: 12px; color: var(--ink-soft); }
-  .shop-item .sneed { font-weight: 800; color: var(--rose); font-size: 14px; white-space: nowrap; }
+  .shop-item .sneed { font-weight: 800; color: var(--rose); font-size: 14px; white-space: nowrap; text-align: right; }
+  .shop-item .scost { font-size: 11.5px; color: var(--ink-soft); font-weight: 600; }
+  .shop-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 4px 4px;
+    font-family: 'Fredoka';
+    font-size: 16px;
+    color: var(--brown);
+  }
 
-  /* ---------- Modal ---------- */
+  /* ================= ORÇAMENTO ================= */
+
+  .budget-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .budget-bar-row:last-child { border-bottom: none; }
+  .budget-bar-row .bb-icon {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    background: var(--honey-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .budget-bar-row .bb-info { flex: 1; min-width: 0; }
+  .budget-bar-row .bb-name { font-weight: 700; font-size: 13.5px; color: var(--brown); }
+  .budget-bar-row .bb-track { height: 7px; background: var(--honey-light); border-radius: 999px; overflow: hidden; margin-top: 5px; }
+  .budget-bar-row .bb-fill { height: 100%; background: var(--honey); border-radius: 999px; }
+  .budget-bar-row .bb-value { font-size: 13px; font-weight: 800; color: var(--brown); white-space: nowrap; }
+
+  .tip-box {
+    display: flex;
+    gap: 10px;
+    background: var(--amber-bg);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    font-size: 13.5px;
+    color: var(--brown);
+    align-items: flex-start;
+  }
+
+  /* ================= MODAL ================= */
+
   .overlay {
     position: fixed; inset: 0;
     background: rgba(58, 44, 34, 0.45);
@@ -371,7 +636,7 @@
     border-radius: var(--radius-lg);
     padding: 26px;
     width: 100%;
-    max-width: 440px;
+    max-width: 460px;
     max-height: 90vh;
     overflow-y: auto;
   }
@@ -381,152 +646,205 @@
   .field input, .field select, .field textarea { width: 100%; }
   .field-row { display: flex; gap: 10px; }
   .field-row .field { flex: 1; }
+  .checkbox-field { display: flex; align-items: center; gap: 8px; }
+  .checkbox-field input { width: auto; }
+  .checkbox-field label { margin: 0; }
   .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
-
-  .toast {
-    position: fixed;
-    bottom: 22px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--brown);
-    color: #fff;
-    padding: 12px 22px;
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 700;
-    opacity: 0;
-    transition: opacity .25s ease, transform .25s ease;
-    pointer-events: none;
-    z-index: 60;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .field-hint { font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
 
   @media (prefers-reduced-motion: reduce) {
-    .bar-fill, .toast { transition: none; }
+    .bar-fill, .toast, .sidebar { transition: none; }
   }
 
   @media print {
-    nav.tabs, .toolbar, .row-actions, header.top .ring-wrap, .fab { display: none !important; }
+    .sidebar, .topbar, .toolbar, .row-actions, .sidebar-overlay { display: none !important; }
+    .main { margin-left: 0 !important; }
   }
 </style>
 </head>
 <body>
 
-<div class="wrap">
+<div class="app-shell">
 
-  <header class="top">
-    <div class="mascot">
-      <svg width="56" height="56" viewBox="0 0 100 100" aria-hidden="true">
-        <circle cx="50" cy="50" r="48" fill="#F3D9B5"/>
-        <circle cx="26" cy="24" r="12" fill="#C1793D"/>
-        <circle cx="74" cy="24" r="12" fill="#C1793D"/>
-        <circle cx="26" cy="24" r="6" fill="#5B3A24"/>
-        <circle cx="74" cy="24" r="6" fill="#5B3A24"/>
-        <circle cx="50" cy="55" r="34" fill="#C1793D"/>
-        <ellipse cx="50" cy="64" rx="16" ry="13" fill="#F9EBD6"/>
-        <circle cx="38" cy="48" r="4.5" fill="#3A2C22"/>
-        <circle cx="62" cy="48" r="4.5" fill="#3A2C22"/>
-        <ellipse cx="50" cy="60" rx="5" ry="4" fill="#5B3A24"/>
-        <path d="M50 63 Q50 68 44 69" stroke="#5B3A24" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M50 63 Q50 68 56 69" stroke="#5B3A24" stroke-width="2" fill="none" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <div class="title-block">
-      <div class="title-row">
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="mascot-wrap">
+        <svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="48" fill="#F3D9B5"/>
+          <circle cx="26" cy="24" r="12" fill="#C1793D"/>
+          <circle cx="74" cy="24" r="12" fill="#C1793D"/>
+          <circle cx="26" cy="24" r="6" fill="#5B3A24"/>
+          <circle cx="74" cy="24" r="6" fill="#5B3A24"/>
+          <circle cx="50" cy="55" r="34" fill="#C1793D"/>
+          <ellipse cx="50" cy="64" rx="16" ry="13" fill="#F9EBD6"/>
+          <circle cx="38" cy="48" r="4.5" fill="#3A2C22"/>
+          <circle cx="62" cy="48" r="4.5" fill="#3A2C22"/>
+          <ellipse cx="50" cy="60" rx="5" ry="4" fill="#5B3A24"/>
+          <path d="M50 63 Q50 68 44 69" stroke="#5B3A24" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M50 63 Q50 68 56 69" stroke="#5B3A24" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
         <h1 id="pageTitle">Enxoval da Bebê</h1>
-        <button class="title-edit-btn" id="editTitleBtn" title="Editar nome">editar</button>
-      </div>
-      <div class="subtitle">O que já tem, o que ganhou e o que ainda falta comprar</div>
-    </div>
-    <div class="ring-wrap">
-      <svg width="52" height="52" viewBox="0 0 52 52">
-        <circle cx="26" cy="26" r="22" fill="none" stroke="#F3D9B5" stroke-width="6"/>
-        <circle id="ringFg" cx="26" cy="26" r="22" fill="none" stroke="#7C9473" stroke-width="6"
-          stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="138.2"
-          transform="rotate(-90 26 26)" style="transition: stroke-dashoffset .5s ease, stroke .3s ease;"/>
-      </svg>
-      <div class="ring-label">Enxoval<br><strong id="ringPct">0%</strong></div>
-    </div>
-  </header>
-
-  <nav class="tabs" role="tablist">
-    <button class="active" data-view="dashboard">Painel</button>
-    <button data-view="itens">Itens</button>
-    <button data-view="compras">Lista de compras</button>
-  </nav>
-
-  <!-- ===================== DASHBOARD ===================== -->
-  <section id="view-dashboard" class="view active">
-    <div class="stat-grid">
-      <div class="stat-card"><div class="num" id="statTotal">0</div><div class="lbl">itens cadastrados</div></div>
-      <div class="stat-card sage"><div class="num" id="statCompletos">0</div><div class="lbl">completos</div></div>
-      <div class="stat-card amber"><div class="num" id="statParciais">0</div><div class="lbl">parciais</div></div>
-      <div class="stat-card rose"><div class="num" id="statFaltando">0</div><div class="lbl">faltando comprar</div></div>
-    </div>
-
-    <div class="card">
-      <h2>Por categoria</h2>
-      <div class="paw-divider"><span class="line"></span></div>
-      <div id="catList"></div>
-    </div>
-
-    <div class="card">
-      <h2>Por tamanho</h2>
-      <div class="paw-divider"><span class="line"></span></div>
-      <div class="size-grid" id="sizeGrid"></div>
-    </div>
-  </section>
-
-  <!-- ===================== ITENS ===================== -->
-  <section id="view-itens" class="view">
-    <div class="toolbar">
-      <input type="text" class="search-input" id="searchInput" placeholder="Buscar item...">
-      <select id="filterCategoria"><option value="">Todas categorias</option></select>
-      <select id="filterTamanho"><option value="">Todos tamanhos</option></select>
-      <select id="filterStatus">
-        <option value="">Todos status</option>
-        <option value="completo">Completo</option>
-        <option value="parcial">Parcial</option>
-        <option value="falta">Falta comprar</option>
-      </select>
-      <button class="btn btn-primary" id="addItemBtn">+ Adicionar item</button>
-    </div>
-
-    <div class="card" style="padding: 10px 16px 16px;">
-      <div class="list-head">
-        <span></span><span>Item</span><span>Tamanho</span><span>Tenho / preciso</span><span>Status</span><span></span>
-      </div>
-      <div id="itemList"></div>
-      <div class="empty" id="emptyState" style="display:none;">
-        <div class="emoji">🧸</div>
-        <h3>Nenhum item por aqui ainda</h3>
-        <p>Adicione o primeiro item do enxoval — roupinha, fralda, brinquedo, o que for.</p>
-        <button class="btn btn-primary" id="emptyAddBtn">+ Adicionar item</button>
+        <button class="brand-edit" id="editTitleBtn">editar nome</button>
       </div>
     </div>
-  </section>
 
-  <!-- ===================== LISTA DE COMPRAS ===================== -->
-  <section id="view-compras" class="view">
-    <div class="card">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <h2>O que falta comprar</h2>
-        <button class="btn btn-ghost" onclick="window.print()">Imprimir / exportar</button>
+    <nav class="side-nav">
+      <button class="side-link active" data-view="dashboard"><span class="ic">🏠</span> Painel</button>
+      <button class="side-link" data-view="itens"><span class="ic">🧺</span> Itens</button>
+      <button class="side-link" data-view="catalogo"><span class="ic">📋</span> Catálogo rápido</button>
+      <button class="side-link" data-view="compras"><span class="ic">🛒</span> Lista de compras</button>
+      <button class="side-link" data-view="orcamento"><span class="ic">💰</span> Orçamento</button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="sidebar-ring-row">
+        <svg width="46" height="46" viewBox="0 0 52 52">
+          <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="6"/>
+          <circle id="ringFg" cx="26" cy="26" r="22" fill="none" stroke="#7C9473" stroke-width="6"
+            stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="138.2"
+            transform="rotate(-90 26 26)" style="transition: stroke-dashoffset .5s ease, stroke .3s ease;"/>
+        </svg>
+        <div class="sidebar-ring-label">Enxoval completo<br><strong id="ringPct">0%</strong></div>
       </div>
-      <div class="paw-divider"><span class="line"></span></div>
-      <div id="shopList"></div>
-      <div class="empty" id="shopEmpty" style="display:none;">
-        <div class="emoji">🎉</div>
-        <h3>Está tudo garantido!</h3>
-        <p>Nenhum item pendente por enquanto. Assim que faltar algo, aparece aqui.</p>
+      <div class="sidebar-foot-actions">
+        <button id="exportBtn" title="Baixar backup dos seus dados em JSON">⬇ Exportar</button>
+        <button id="importBtn" title="Restaurar a partir de um backup JSON">⬆ Importar</button>
       </div>
+      <input type="file" id="importFile" accept="application/json" style="display:none;">
     </div>
-  </section>
+  </aside>
 
+  <div class="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menu">☰</button>
+      <h1 id="viewTitle">Painel</h1>
+      <div id="topbarActions"></div>
+    </header>
+
+    <div class="content">
+
+      <!-- ===================== DASHBOARD ===================== -->
+      <section id="view-dashboard" class="view active">
+        <div class="stat-grid">
+          <div class="stat-card"><div class="num" id="statTotal">0</div><div class="lbl">itens cadastrados</div></div>
+          <div class="stat-card sage"><div class="num" id="statCompletos">0</div><div class="lbl">completos</div></div>
+          <div class="stat-card amber"><div class="num" id="statParciais">0</div><div class="lbl">parciais</div></div>
+          <div class="stat-card rose"><div class="num" id="statFaltando">0</div><div class="lbl">faltando comprar</div></div>
+          <div class="stat-card rose"><div class="num" id="statEssenciais">0</div><div class="lbl">essenciais faltando</div></div>
+          <div class="stat-card"><div class="num" id="statValorFalta">R$ 0</div><div class="lbl">estimado para comprar</div></div>
+        </div>
+
+        <div class="card">
+          <h2>Linha do tempo por tamanho</h2>
+          <div class="card-sub">O progresso de cada fase, na ordem em que a Bebê vai crescendo</div>
+          <div class="timeline-scroll" id="timelineScroll"></div>
+        </div>
+
+        <div class="card">
+          <h2>Por categoria</h2>
+          <div class="paw-divider"><span class="line"></span></div>
+          <div id="catList"></div>
+        </div>
+
+        <div class="card">
+          <h2>Atividade recente</h2>
+          <div class="card-sub">Os últimos itens que você adicionou ou atualizou</div>
+          <div id="activityList"></div>
+        </div>
+      </section>
+
+      <!-- ===================== ITENS ===================== -->
+      <section id="view-itens" class="view">
+        <div class="toolbar">
+          <input type="text" class="search-input" id="searchInput" placeholder="Buscar item...">
+          <select id="filterCategoria"><option value="">Todas categorias</option></select>
+          <select id="filterTamanho"><option value="">Todos tamanhos</option></select>
+          <select id="filterPrioridade">
+            <option value="">Toda prioridade</option>
+            <option value="essencial">Essencial</option>
+            <option value="desejavel">Desejável</option>
+          </select>
+          <select id="filterStatus">
+            <option value="">Todos status</option>
+            <option value="completo">Completo</option>
+            <option value="parcial">Parcial</option>
+            <option value="falta">Falta comprar</option>
+          </select>
+          <select id="sortBy">
+            <option value="recentes">Mais recentes</option>
+            <option value="nome">Nome (A-Z)</option>
+            <option value="status">Status</option>
+            <option value="prioridade">Prioridade</option>
+          </select>
+        </div>
+
+        <div class="card" style="padding: 10px 16px 16px;">
+          <div class="list-head">
+            <span></span><span>Item</span><span class="tamanho-col">Tamanho</span><span class="prior-col">Prioridade</span><span class="qty-col">Tenho / preciso</span><span>Status</span><span></span>
+          </div>
+          <div id="itemList"></div>
+          <div class="empty" id="emptyState" style="display:none;">
+            <div class="emoji">🧸</div>
+            <h3>Nenhum item por aqui ainda</h3>
+            <p>Comece pelo Catálogo rápido pra ter uma base pronta, ou adicione um item manualmente.</p>
+            <button class="btn btn-primary" id="emptyAddBtn">+ Adicionar item</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== CATÁLOGO RÁPIDO ===================== -->
+      <section id="view-catalogo" class="view">
+        <div class="card">
+          <h2>Catálogo rápido</h2>
+          <div class="card-sub">Uma lista pronta com o essencial de um enxoval. Toque em "+ Adicionar" para colocar na sua lista — os itens já na sua lista aparecem marcados.</div>
+          <div id="catalogoContent"></div>
+        </div>
+      </section>
+
+      <!-- ===================== LISTA DE COMPRAS ===================== -->
+      <section id="view-compras" class="view">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <h2>O que falta comprar</h2>
+            <button class="btn btn-ghost" onclick="window.print()">Imprimir / exportar</button>
+          </div>
+          <div class="paw-divider"><span class="line"></span></div>
+          <div id="shopList"></div>
+          <div class="empty" id="shopEmpty" style="display:none;">
+            <div class="emoji">🎉</div>
+            <h3>Está tudo garantido!</h3>
+            <p>Nenhum item pendente por enquanto. Assim que faltar algo, aparece aqui.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== ORÇAMENTO ===================== -->
+      <section id="view-orcamento" class="view">
+        <div class="stat-grid">
+          <div class="stat-card"><div class="num" id="budTotal">R$ 0</div><div class="lbl">valor estimado do enxoval</div></div>
+          <div class="stat-card sage"><div class="num" id="budGarantido">R$ 0</div><div class="lbl">já garantido</div></div>
+          <div class="stat-card rose"><div class="num" id="budFalta">R$ 0</div><div class="lbl">ainda falta investir</div></div>
+          <div class="stat-card amber"><div class="num" id="budEconomia">R$ 0</div><div class="lbl">economizado em presentes</div></div>
+        </div>
+
+        <div class="tip-box">
+          💡 <span>Os valores são estimativas que você define ao cadastrar cada item (campo "Valor estimado"). Ajuste conforme for pesquisando preços — isso não afeta o controle de quantidades.</span>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <h2>Quanto falta investir, por categoria</h2>
+          <div class="card-sub">Categorias ordenadas pelo que mais pesa no bolso</div>
+          <div id="budgetList"></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
 </div>
-
-<button class="btn btn-primary fab" id="fabAdd"
-  style="position:fixed; bottom:22px; right:22px; width:56px; height:56px; border-radius:50%; font-size:24px; box-shadow:0 8px 20px rgba(91,58,36,.25); display:none; align-items:center; justify-content:center;">+</button>
 
 <!-- Modal: add/edit item -->
 <div class="overlay" id="modalOverlay">
@@ -557,6 +875,19 @@
           <input type="number" id="fTenho" min="0" value="0" required>
         </div>
       </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="fPrioridade">Prioridade</label>
+          <select id="fPrioridade">
+            <option value="essencial">Essencial</option>
+            <option value="desejavel">Desejável</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="fValor">Valor estimado (R$ / unidade)</label>
+          <input type="number" id="fValor" min="0" step="0.01" value="0">
+        </div>
+      </div>
       <div class="field">
         <label for="fOrigem">Origem</label>
         <select id="fOrigem">
@@ -566,9 +897,19 @@
           <option value="misto">Parte ganhei, parte comprei</option>
         </select>
       </div>
+      <div id="origemGiftFields">
+        <div class="field">
+          <label for="fQuemDeu">Quem deu de presente (opcional)</label>
+          <input type="text" id="fQuemDeu" placeholder="Ex: Vó Marta, tia Ana...">
+        </div>
+        <div class="field checkbox-field">
+          <input type="checkbox" id="fAgradecido">
+          <label for="fAgradecido">Já agradeci por este presente</label>
+        </div>
+      </div>
       <div class="field">
         <label for="fNotas">Notas (opcional)</label>
-        <textarea id="fNotas" rows="2" placeholder="Ex: cor, marca, quem deu de presente..."></textarea>
+        <textarea id="fNotas" rows="2" placeholder="Ex: cor, marca..."></textarea>
       </div>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost" id="cancelBtn">Cancelar</button>
@@ -582,21 +923,95 @@
 
 <script>
 (function () {
+  // ⚠️ Cole aqui a URL do seu Web App do Apps Script (termina em /exec)
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzntVBVGJmeswLU7gTCwuVZ69H3dE_8W9126CuPlGgATlfxeM42TSfJ974ItrWNRmHJMw/exec';
+
   const CATEGORIAS = [
     { id: 'roupa', label: 'Roupas', icon: '👕' },
     { id: 'calcado', label: 'Calçados', icon: '👟' },
     { id: 'higiene', label: 'Higiene', icon: '🧴' },
     { id: 'quarto', label: 'Quarto e enxoval de cama', icon: '🛏️' },
     { id: 'alimentacao', label: 'Alimentação', icon: '🍼' },
-    { id: 'brinquedo', label: 'Brinquedos', icon: '🧸' },
+    { id: 'amamentacao', label: 'Amamentação', icon: '🤱' },
     { id: 'passeio', label: 'Passeio', icon: '🚼' },
+    { id: 'maternidade', label: 'Mala da maternidade', icon: '👜' },
+    { id: 'brinquedo', label: 'Brinquedos', icon: '🧸' },
     { id: 'outro', label: 'Outros', icon: '📦' },
   ];
   const TAMANHOS = ['RN', 'P', 'M', 'G', 'GG', '1 ano', '2 anos', 'Único'];
   const ORIGEM_LABEL = { planejado: 'A providenciar', ganhei: 'Ganhei', comprei: 'Comprei', misto: 'Ganhei + comprei' };
+  const PRIORIDADE_LABEL = { essencial: 'Essencial', desejavel: 'Desejável' };
 
-  // ⚠️ Cole aqui a URL do seu Web App do Apps Script (termina em /exec)
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzntVBVGJmeswLU7gTCwuVZ69H3dE_8W9126CuPlGgATlfxeM42TSfJ974ItrWNRmHJMw/exec';
+  // Catálogo rápido — base sugerida de um enxoval, por categoria
+  const CATALOGO_RAPIDO = [
+    { categoria: 'roupa', itens: [
+      { nome: 'Body manga curta', tamanho: 'RN', qtd: 6, prioridade: 'essencial' },
+      { nome: 'Body manga longa', tamanho: 'RN', qtd: 4, prioridade: 'essencial' },
+      { nome: 'Macacão curto', tamanho: 'P', qtd: 4, prioridade: 'essencial' },
+      { nome: 'Macacão longo', tamanho: 'P', qtd: 4, prioridade: 'essencial' },
+      { nome: 'Calça', tamanho: 'P', qtd: 4, prioridade: 'desejavel' },
+      { nome: 'Casaco / jaquetinha', tamanho: 'P', qtd: 2, prioridade: 'essencial' },
+      { nome: 'Touca', tamanho: 'Único', qtd: 2, prioridade: 'essencial' },
+      { nome: 'Luvas', tamanho: 'Único', qtd: 2, prioridade: 'desejavel' },
+      { nome: 'Meias', tamanho: 'P', qtd: 6, prioridade: 'essencial' },
+      { nome: 'Babador de pano', tamanho: 'Único', qtd: 6, prioridade: 'essencial' },
+    ]},
+    { categoria: 'calcado', itens: [
+      { nome: 'Sapatinho / pantufa', tamanho: 'RN', qtd: 2, prioridade: 'desejavel' },
+    ]},
+    { categoria: 'higiene', itens: [
+      { nome: 'Fralda descartável RN (pacotes)', tamanho: 'Único', qtd: 2, prioridade: 'essencial' },
+      { nome: 'Lenços umedecidos (pacotes)', tamanho: 'Único', qtd: 4, prioridade: 'essencial' },
+      { nome: 'Pomada para assaduras', tamanho: 'Único', qtd: 2, prioridade: 'essencial' },
+      { nome: 'Sabonete líquido neutro', tamanho: 'Único', qtd: 2, prioridade: 'essencial' },
+      { nome: 'Shampoo neutro', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
+      { nome: 'Escova e pente', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
+      { nome: 'Cortador de unha', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
+      { nome: 'Toalha de banho com capuz', tamanho: 'Único', qtd: 3, prioridade: 'essencial' },
+      { nome: 'Fralda de pano (paninho)', tamanho: 'Único', qtd: 8, prioridade: 'essencial' },
+    ]},
+    { categoria: 'quarto', itens: [
+      { nome: 'Berço', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
+      { nome: 'Colchão para berço', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
+      { nome: 'Jogo de lençol de berço', tamanho: 'Único', qtd: 3, prioridade: 'essencial' },
+      { nome: 'Protetor de berço', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
+      { nome: 'Travesseiro infantil', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
+      { nome: 'Cortina blackout', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
+      { nome: 'Móbile', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
+    ]},
+    { categoria: 'alimentacao', itens: [
+      { nome: 'Mamadeira', tamanho: 'Único', qtd: 3, prioridade: 'essencial' },
+      { nome: 'Escova para mamadeira', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
+      { nome: 'Esterilizador', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
+      { nome: 'Babador impermeável', tamanho: 'Único', qtd: 4, prioridade: 'desejavel' },
+    ]},
+    { categoria: 'amamentacao', itens: [
+      { nome: 'Sutiã de amamentação', tamanho: 'Único', qtd: 3, prioridade: 'essencial' },
+      { nome: 'Bombinha tira-leite', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
+      { nome: 'Absorvente para seios (pacotes)', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
+      { nome: 'Almofada de amamentação', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
+    ]},
+    { categoria: 'passeio', itens: [
+      { nome: 'Carrinho de bebê', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
+      { nome: 'Bebê conforto / cadeirinha', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
+      { nome: 'Bolsa maternidade', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
+      { nome: 'Canguru / sling', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
+    ]},
+    { categoria: 'maternidade', itens: [
+      { nome: 'Saída de maternidade', tamanho: 'RN', qtd: 1, prioridade: 'essencial' },
+      { nome: 'Body para o dia do parto', tamanho: 'RN', qtd: 2, prioridade: 'essencial' },
+      { nome: 'Manta', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
+    ]},
+    { categoria: 'brinquedo', itens: [
+      { nome: 'Chocalho', tamanho: 'Único', qtd: 2, prioridade: 'desejavel' },
+      { nome: 'Mordedor', tamanho: 'Único', qtd: 2, prioridade: 'desejavel' },
+      { nome: 'Tapete de atividades', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
+    ]},
+    { categoria: 'outro', itens: [
+      { nome: 'Termômetro', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
+      { nome: 'Aspirador nasal', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
+    ]},
+  ];
 
   let items = [];
   let customCategories = [];
@@ -609,9 +1024,42 @@
   function catInfo(id) { return allCategorias().find(c => c.id === id) || CATEGORIAS[CATEGORIAS.length - 1]; }
 
   function statusOf(item) {
-    if (item.tenho >= item.preciso) return 'completo';
-    if (item.tenho > 0) return 'parcial';
+    const tenho = Number(item.tenho) || 0;
+    const preciso = Number(item.preciso) || 1;
+    if (tenho >= preciso) return 'completo';
+    if (tenho > 0) return 'parcial';
     return 'falta';
+  }
+  function prioridadeOf(item) { return item.prioridade === 'desejavel' ? 'desejavel' : 'essencial'; }
+  function valorOf(item) { return Number(item.valor) || 0; }
+  function isGift(item) { return item.origem === 'ganhei' || item.origem === 'misto'; }
+  function isAgradecido(item) { return item.agradecido === true || item.agradecido === 'true' || item.agradecido === 'TRUE'; }
+
+  function formatMoney(n) {
+    return 'R$ ' + (Math.round(n * 100) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str == null ? '' : String(str);
+    return d.innerHTML;
+  }
+
+  function timeAgo(iso) {
+    if (!iso) return '';
+    const date = new Date(iso);
+    if (isNaN(date.getTime())) return '';
+    const diffMs = Date.now() - date.getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return 'agora mesmo';
+    if (mins < 60) return 'há ' + mins + ' min';
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return 'há ' + hours + 'h';
+    const days = Math.floor(hours / 24);
+    if (days === 1) return 'ontem';
+    if (days < 30) return 'há ' + days + ' dias';
+    const months = Math.floor(days / 30);
+    return 'há ' + months + (months === 1 ? ' mês' : ' meses');
   }
 
   // ---------- API (Google Apps Script + planilha) ----------
@@ -644,24 +1092,24 @@
     } catch (e) { /* keep defaults */ }
   }
 
-  async function createItem(data) {
+  async function createItemRemote(data) {
     try {
       const row = await apiPost('createItem', data);
       items.push(row);
-      return true;
-    } catch (e) { showToast('Não consegui salvar o item.'); return false; }
+      return row;
+    } catch (e) { showToast('Não consegui salvar o item.'); return null; }
   }
 
-  async function updateItem(id, data) {
+  async function updateItemRemote(id, data) {
     try {
       const row = await apiPost('updateItem', Object.assign({ id }, data));
       const idx = items.findIndex(i => i.id === id);
       if (idx > -1) items[idx] = row;
-      return true;
-    } catch (e) { showToast('Não consegui atualizar o item.'); return false; }
+      return row;
+    } catch (e) { showToast('Não consegui atualizar o item.'); return null; }
   }
 
-  async function removeItem(id) {
+  async function removeItemRemote(id) {
     try {
       await apiPost('deleteItem', { id });
       items = items.filter(i => i.id !== id);
@@ -669,7 +1117,7 @@
     } catch (e) { showToast('Não consegui remover o item.'); return false; }
   }
 
-  async function saveCategories(label, icon) {
+  async function saveCategoryRemote(label, icon) {
     try {
       const row = await apiPost('createCategory', { label, icon });
       customCategories.push(row);
@@ -677,13 +1125,13 @@
     } catch (e) { showToast('Não consegui salvar a nova categoria agora.'); return null; }
   }
 
-  async function saveSettings() {
+  async function saveSettingsRemote() {
     try {
       await apiPost('updateSettings', { title: settings.title });
     } catch (e) { showToast('Não consegui salvar o nome agora.'); }
   }
 
-  // ---------- Populate selects ----------
+  // ---------- Selects ----------
   function fillSelect(sel, options, includeEmpty, emptyLabel) {
     sel.innerHTML = '';
     if (includeEmpty) {
@@ -715,10 +1163,10 @@
 
   $('fCategoria').addEventListener('change', async (e) => {
     if (e.target.value !== '__new__') return;
-    const label = prompt('Nome da nova categoria (ex: Amamentação, Documentos...):');
+    const label = prompt('Nome da nova categoria (ex: Documentos...):');
     if (!label || !label.trim()) { refreshCategorySelects(CATEGORIAS[0].id); return; }
     const icon = prompt('Um emoji para representar essa categoria (opcional):', '🏷️') || '🏷️';
-    const row = await saveCategories(label.trim(), icon.trim() || '🏷️');
+    const row = await saveCategoryRemote(label.trim(), icon.trim() || '🏷️');
     refreshCategorySelects(row ? row.id : CATEGORIAS[0].id);
     if (row) showToast('Categoria criada');
   });
@@ -733,16 +1181,32 @@
     toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
   }
 
-  // ---------- Tabs ----------
-  document.querySelectorAll('nav.tabs button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      btn.classList.add('active');
-      $('view-' + btn.dataset.view).classList.add('active');
-      $('fabAdd').style.display = btn.dataset.view === 'itens' ? 'flex' : 'none';
-    });
+  // ---------- Sidebar navigation ----------
+  const VIEW_TITLES = {
+    dashboard: 'Painel',
+    itens: 'Itens',
+    catalogo: 'Catálogo rápido',
+    compras: 'Lista de compras',
+    orcamento: 'Orçamento',
+  };
+
+  function switchView(view) {
+    document.querySelectorAll('.side-link').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    $('view-' + view).classList.add('active');
+    $('viewTitle').textContent = VIEW_TITLES[view] || '';
+    closeSidebar();
+    window.scrollTo(0, 0);
+  }
+
+  document.querySelectorAll('.side-link').forEach(btn => {
+    btn.addEventListener('click', () => switchView(btn.dataset.view));
   });
+
+  function openSidebar() { $('sidebar').classList.add('open'); $('sidebarOverlay').classList.add('open'); }
+  function closeSidebar() { $('sidebar').classList.remove('open'); $('sidebarOverlay').classList.remove('open'); }
+  $('hamburgerBtn').addEventListener('click', openSidebar);
+  $('sidebarOverlay').addEventListener('click', closeSidebar);
 
   // ---------- Title editing ----------
   $('editTitleBtn').addEventListener('click', () => {
@@ -750,11 +1214,58 @@
     if (novo !== null && novo.trim()) {
       settings.title = novo.trim();
       $('pageTitle').textContent = settings.title;
-      saveSettings();
+      saveSettingsRemote();
     }
   });
 
+  // ---------- Export / Import backup ----------
+  $('exportBtn').addEventListener('click', () => {
+    const backup = { exportedAt: new Date().toISOString(), settings, customCategories, items };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'enxoval-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    showToast('Backup baixado');
+  });
+
+  $('importBtn').addEventListener('click', () => $('importFile').click());
+  $('importFile').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const backup = JSON.parse(text);
+      if (!backup || !Array.isArray(backup.items)) throw new Error('formato inválido');
+      if (!confirm('Isso vai adicionar ' + backup.items.length + ' item(ns) do backup à sua lista atual (sem apagar o que já existe). Continuar?')) return;
+      let count = 0;
+      for (const it of backup.items) {
+        const row = await createItemRemote({
+          nome: it.nome, categoria: it.categoria, tamanho: it.tamanho,
+          preciso: it.preciso, tenho: it.tenho, origem: it.origem, notas: it.notas,
+          prioridade: it.prioridade, valor: it.valor, quemDeu: it.quemDeu, agradecido: it.agradecido,
+        });
+        if (row) count++;
+      }
+      showToast(count + ' item(ns) importado(s)');
+      renderAll();
+    } catch (err) {
+      showToast('Não consegui ler esse arquivo de backup.');
+    }
+    e.target.value = '';
+  });
+
   // ---------- Modal ----------
+  function updateOrigemFieldsVisibility() {
+    const show = $('fOrigem').value === 'ganhei' || $('fOrigem').value === 'misto';
+    $('origemGiftFields').style.display = show ? 'block' : 'none';
+  }
+  $('fOrigem').addEventListener('change', updateOrigemFieldsVisibility);
+
   function openModal(item) {
     editingId = item ? item.id : null;
     $('modalTitle').textContent = item ? 'Editar item' : 'Adicionar item';
@@ -763,16 +1274,19 @@
     $('fTamanho').value = item ? item.tamanho : TAMANHOS[0];
     $('fPreciso').value = item ? item.preciso : 1;
     $('fTenho').value = item ? item.tenho : 0;
+    $('fPrioridade').value = item ? prioridadeOf(item) : 'essencial';
+    $('fValor').value = item ? valorOf(item) : 0;
     $('fOrigem').value = item ? item.origem : 'planejado';
+    $('fQuemDeu').value = item ? (item.quemDeu || '') : '';
+    $('fAgradecido').checked = item ? isAgradecido(item) : false;
     $('fNotas').value = item ? (item.notas || '') : '';
+    updateOrigemFieldsVisibility();
     $('modalOverlay').classList.add('open');
     setTimeout(() => $('fName').focus(), 50);
   }
   function closeModal() { $('modalOverlay').classList.remove('open'); editingId = null; }
 
-  $('addItemBtn').addEventListener('click', () => openModal(null));
   $('emptyAddBtn').addEventListener('click', () => openModal(null));
-  $('fabAdd').addEventListener('click', () => openModal(null));
   $('cancelBtn').addEventListener('click', closeModal);
   $('modalOverlay').addEventListener('click', (e) => { if (e.target.id === 'modalOverlay') closeModal(); });
 
@@ -786,15 +1300,19 @@
       tamanho: $('fTamanho').value,
       preciso: Math.max(1, parseInt($('fPreciso').value, 10) || 1),
       tenho: Math.max(0, parseInt($('fTenho').value, 10) || 0),
+      prioridade: $('fPrioridade').value,
+      valor: Math.max(0, parseFloat($('fValor').value) || 0),
       origem: $('fOrigem').value,
+      quemDeu: $('fQuemDeu').value.trim(),
+      agradecido: $('fAgradecido').checked,
       notas: $('fNotas').value.trim(),
     };
     let ok;
     if (editingId) {
-      ok = await updateItem(editingId, data);
+      ok = await updateItemRemote(editingId, data);
       if (ok) showToast('Item atualizado');
     } else {
-      ok = await createItem(data);
+      ok = await createItemRemote(data);
       if (ok) showToast('Item adicionado');
     }
     if (ok) closeModal();
@@ -805,22 +1323,45 @@
     const it = items.find(i => i.id === id);
     if (!it) return;
     if (!confirm('Remover "' + it.nome + '" do enxoval?')) return;
-    const ok = await removeItem(id);
+    const ok = await removeItemRemote(id);
     if (ok) showToast('Item removido');
     renderAll();
   }
 
+  // Botão flutuante "+ adicionar" no topo da página Itens
+  function renderTopbarAction(view) {
+    const el = $('topbarActions');
+    el.innerHTML = '';
+    if (view === 'itens') {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-primary';
+      btn.textContent = '+ Adicionar item';
+      btn.addEventListener('click', () => openModal(null));
+      el.appendChild(btn);
+    }
+  }
+  document.querySelectorAll('.side-link').forEach(btn => {
+    btn.addEventListener('click', () => renderTopbarAction(btn.dataset.view));
+  });
+
   // ---------- Render: Dashboard ----------
   function renderDashboard() {
     let totalPreciso = 0, totalTenho = 0;
-    let completos = 0, parciais = 0, faltando = 0;
+    let completos = 0, parciais = 0, faltando = 0, essenciaisFaltando = 0;
+    let valorFalta = 0;
     items.forEach(it => {
-      totalPreciso += it.preciso;
-      totalTenho += Math.min(it.tenho, it.preciso);
+      const preciso = Number(it.preciso) || 1;
+      const tenho = Number(it.tenho) || 0;
+      totalPreciso += preciso;
+      totalTenho += Math.min(tenho, preciso);
       const s = statusOf(it);
       if (s === 'completo') completos++;
       else if (s === 'parcial') parciais++;
-      else faltando++;
+      else {
+        faltando++;
+        if (prioridadeOf(it) === 'essencial') essenciaisFaltando++;
+      }
+      if (tenho < preciso) valorFalta += (preciso - tenho) * valorOf(it);
     });
     const pct = totalPreciso ? Math.round((totalTenho / totalPreciso) * 100) : 0;
 
@@ -828,11 +1369,36 @@
     $('statCompletos').textContent = completos;
     $('statParciais').textContent = parciais;
     $('statFaltando').textContent = faltando;
+    $('statEssenciais').textContent = essenciaisFaltando;
+    $('statValorFalta').textContent = formatMoney(valorFalta);
 
     const CIRC = 138.2;
     $('ringFg').style.strokeDashoffset = CIRC - (CIRC * pct / 100);
     $('ringFg').style.stroke = pct >= 80 ? '#7C9473' : pct >= 40 ? '#D9A441' : '#D46A5D';
     $('ringPct').textContent = pct + '%';
+
+    // Timeline by size
+    const timeline = $('timelineScroll');
+    timeline.innerHTML = '';
+    TAMANHOS.forEach(tam => {
+      const tamItems = items.filter(i => i.tamanho === tam);
+      let colorClass = 'empty-stage';
+      let pctLabel = '—';
+      if (tamItems.length) {
+        let p = 0, t = 0;
+        tamItems.forEach(i => { p += Number(i.preciso) || 1; t += Math.min(Number(i.tenho) || 0, Number(i.preciso) || 1); });
+        const tpct = p ? Math.round((t / p) * 100) : 0;
+        colorClass = tpct >= 80 ? 'sage' : tpct >= 40 ? 'warn' : 'low';
+        pctLabel = tpct + '%';
+      }
+      const stage = document.createElement('div');
+      stage.className = 'timeline-stage';
+      stage.innerHTML =
+        '<div class="timeline-circle ' + colorClass + '">' + pctLabel + '</div>' +
+        '<div class="timeline-label">' + tam + '</div>' +
+        '<div class="timeline-sub">' + tamItems.length + ' item(ns)</div>';
+      timeline.appendChild(stage);
+    });
 
     // Category breakdown
     const catList = $('catList');
@@ -841,14 +1407,14 @@
       const catItems = items.filter(i => i.categoria === cat.id);
       if (!catItems.length) return;
       let p = 0, t = 0;
-      catItems.forEach(i => { p += i.preciso; t += Math.min(i.tenho, i.preciso); });
+      catItems.forEach(i => { p += Number(i.preciso) || 1; t += Math.min(Number(i.tenho) || 0, Number(i.preciso) || 1); });
       const cpct = p ? Math.round((t / p) * 100) : 0;
       const row = document.createElement('div');
       row.className = 'cat-row';
       row.innerHTML =
         '<div class="cat-icon">' + cat.icon + '</div>' +
         '<div class="cat-info">' +
-          '<div class="cat-name">' + cat.label + '</div>' +
+          '<div class="cat-name">' + escapeHtml(cat.label) + '</div>' +
           '<div class="cat-count">' + catItems.length + ' item(ns) · ' + t + ' de ' + p + ' peças</div>' +
           '<div class="bar-track"><div class="bar-fill' + (cpct < 40 ? ' low' : cpct < 80 ? ' warn' : '') + '" style="width:' + cpct + '%"></div></div>' +
         '</div>';
@@ -858,26 +1424,29 @@
       catList.innerHTML = '<p style="color:var(--ink-soft); font-size:14px;">Adicione itens para ver o progresso por categoria.</p>';
     }
 
-    // Size breakdown
-    const sizeGrid = $('sizeGrid');
-    sizeGrid.innerHTML = '';
-    TAMANHOS.forEach(tam => {
-      const tamItems = items.filter(i => i.tamanho === tam);
-      if (!tamItems.length) return;
-      let p = 0, t = 0;
-      tamItems.forEach(i => { p += i.preciso; t += Math.min(i.tenho, i.preciso); });
-      const tpct = p ? Math.round((t / p) * 100) : 0;
-      const color = tpct >= 80 ? 'var(--sage)' : tpct >= 40 ? 'var(--amber)' : 'var(--rose)';
-      const card = document.createElement('div');
-      card.className = 'size-card';
-      card.innerHTML =
-        '<div class="size-label">' + tam + '</div>' +
-        '<div class="size-pct" style="color:' + color + '">' + tpct + '%</div>' +
-        '<div class="size-count">' + tamItems.length + ' item(ns)</div>';
-      sizeGrid.appendChild(card);
+    // Activity feed
+    const activityList = $('activityList');
+    activityList.innerHTML = '';
+    const sorted = items.slice().sort((a, b) => {
+      const ta = new Date(a.atualizadoEm || a.criadoEm || 0).getTime();
+      const tb = new Date(b.atualizadoEm || b.criadoEm || 0).getTime();
+      return tb - ta;
+    }).slice(0, 6);
+    sorted.forEach(it => {
+      const wasEdited = it.criadoEm && it.atualizadoEm && it.criadoEm !== it.atualizadoEm;
+      const cat = catInfo(it.categoria);
+      const row = document.createElement('div');
+      row.className = 'activity-row';
+      row.innerHTML =
+        '<div class="activity-ic">' + cat.icon + '</div>' +
+        '<div>' +
+          '<div class="activity-text">' + (wasEdited ? 'Atualizou ' : 'Adicionou ') + '<strong>' + escapeHtml(it.nome) + '</strong></div>' +
+          '<div class="activity-time">' + timeAgo(it.atualizadoEm || it.criadoEm) + '</div>' +
+        '</div>';
+      activityList.appendChild(row);
     });
-    if (!sizeGrid.children.length) {
-      sizeGrid.innerHTML = '<p style="color:var(--ink-soft); font-size:14px;">Nenhum item cadastrado ainda.</p>';
+    if (!sorted.length) {
+      activityList.innerHTML = '<p style="color:var(--ink-soft); font-size:14px;">Nenhuma atividade ainda.</p>';
     }
   }
 
@@ -886,15 +1455,29 @@
     const search = $('searchInput').value.trim().toLowerCase();
     const fc = $('filterCategoria').value;
     const ft = $('filterTamanho').value;
+    const fp = $('filterPrioridade').value;
     const fs = $('filterStatus').value;
+    const sortBy = $('sortBy').value;
 
-    const filtered = items.filter(it => {
+    let filtered = items.filter(it => {
       if (search && !it.nome.toLowerCase().includes(search)) return false;
       if (fc && it.categoria !== fc) return false;
       if (ft && it.tamanho !== ft) return false;
+      if (fp && prioridadeOf(it) !== fp) return false;
       if (fs && statusOf(it) !== fs) return false;
       return true;
     });
+
+    const statusOrder = { falta: 0, parcial: 1, completo: 2 };
+    if (sortBy === 'nome') {
+      filtered.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+    } else if (sortBy === 'status') {
+      filtered.sort((a, b) => statusOrder[statusOf(a)] - statusOrder[statusOf(b)]);
+    } else if (sortBy === 'prioridade') {
+      filtered.sort((a, b) => (prioridadeOf(a) === 'essencial' ? 0 : 1) - (prioridadeOf(b) === 'essencial' ? 0 : 1));
+    } else {
+      filtered.sort((a, b) => new Date(b.criadoEm || 0) - new Date(a.criadoEm || 0));
+    }
 
     const list = $('itemList');
     list.innerHTML = '';
@@ -909,19 +1492,38 @@
       const cat = catInfo(it.categoria);
       const s = statusOf(it);
       const sLabel = s === 'completo' ? 'Completo' : s === 'parcial' ? 'Parcial' : 'Falta comprar';
+      const prio = prioridadeOf(it);
+      const preciso = Number(it.preciso) || 1;
+      const tenho = Number(it.tenho) || 0;
+      const valor = valorOf(it);
+
+      let thanksBadge = '';
+      if (isGift(it)) {
+        thanksBadge = isAgradecido(it)
+          ? '<span class="badge thanks-done" title="Já agradecido">✓ agradecido</span>'
+          : '<span class="badge thanks-pending" title="Lembrar de agradecer">🙏 agradecer</span>';
+      }
+
       const row = document.createElement('div');
       row.className = 'item-row';
       row.innerHTML =
         '<div class="cat-icon" style="width:34px;height:34px;font-size:15px;">' + cat.icon + '</div>' +
         '<div>' +
-          '<div class="name">' + escapeHtml(it.nome) + '</div>' +
-          '<div class="meta">' + cat.label + ' · ' + ORIGEM_LABEL[it.origem] + (it.notas ? ' · ' + escapeHtml(it.notas) : '') + '</div>' +
-          '<div class="meta-mobile"></div>' +
+          '<div class="name">' + escapeHtml(it.nome) +
+            (prio === 'essencial' ? '<span class="badge priority-essencial">essencial</span>' : '') +
+            thanksBadge +
+          '</div>' +
+          '<div class="meta">' + escapeHtml(cat.label) + ' · ' + ORIGEM_LABEL[it.origem] +
+            (valor > 0 ? ' · <span class="valor-tag">' + formatMoney(valor) + '/un</span>' : '') +
+            (it.quemDeu ? ' · de ' + escapeHtml(it.quemDeu) : '') +
+            (it.notas ? ' · ' + escapeHtml(it.notas) : '') +
+          '</div>' +
         '</div>' +
-        '<div class="badge size-col">' + it.tamanho + '</div>' +
+        '<div class="badge tamanho-col">' + it.tamanho + '</div>' +
+        '<div class="prior-col"><span class="badge priority-' + prio + '">' + PRIORIDADE_LABEL[prio] + '</span></div>' +
         '<div class="qty-block qty-col">' +
-          '<span class="qty-text">' + it.tenho + ' de ' + it.preciso + '</span>' +
-          '<div class="bar-track"><div class="bar-fill' + (s === 'falta' ? ' low' : s === 'parcial' ? ' warn' : '') + '" style="width:' + Math.min(100, Math.round((it.tenho / it.preciso) * 100)) + '%"></div></div>' +
+          '<span class="qty-text">' + tenho + ' de ' + preciso + '</span>' +
+          '<div class="bar-track"><div class="bar-fill' + (s === 'falta' ? ' low' : s === 'parcial' ? ' warn' : '') + '" style="width:' + Math.min(100, Math.round((tenho / preciso) * 100)) + '%"></div></div>' +
         '</div>' +
         '<div class="status-pill ' + s + '">' + sLabel + '</div>' +
         '<div class="row-actions">' +
@@ -938,44 +1540,162 @@
     list.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => deleteItem(b.dataset.del)));
   }
 
-  function escapeHtml(str) {
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
+  // ---------- Render: Catálogo rápido ----------
+  function itemExists(nome, tamanho) {
+    const n = nome.trim().toLowerCase();
+    return items.some(it => it.nome.trim().toLowerCase() === n && it.tamanho === tamanho);
+  }
+
+  function renderCatalogo() {
+    const container = $('catalogoContent');
+    container.innerHTML = '';
+    CATALOGO_RAPIDO.forEach(group => {
+      const cat = catInfo(group.categoria);
+      const groupEl = document.createElement('div');
+      groupEl.className = 'catalogo-group';
+      let html = '<h3><span class="cg-title">' + cat.icon + ' ' + escapeHtml(cat.label) + '</span></h3>';
+      group.itens.forEach((ci, idx) => {
+        const exists = itemExists(ci.nome, ci.tamanho);
+        html += '<div class="catalogo-item">' +
+          '<div>' +
+            '<div class="ci-name">' + escapeHtml(ci.nome) + (ci.prioridade === 'essencial' ? ' <span class="badge priority-essencial">essencial</span>' : '') + '</div>' +
+            '<div class="ci-sub">Tamanho ' + ci.tamanho + ' · sugestão: ' + ci.qtd + ' un.</div>' +
+          '</div>' +
+          '<button class="btn btn-sm ' + (exists ? 'btn-ghost' : 'btn-primary') + '" data-cat="' + group.categoria + '" data-idx="' + idx + '" ' + (exists ? 'disabled' : '') + '>' +
+            (exists ? '✓ já na lista' : '+ Adicionar') +
+          '</button>' +
+        '</div>';
+      });
+      groupEl.innerHTML = html;
+      container.appendChild(groupEl);
+    });
+
+    container.querySelectorAll('button[data-cat]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const group = CATALOGO_RAPIDO.find(g => g.categoria === btn.dataset.cat);
+        const ci = group.itens[Number(btn.dataset.idx)];
+        btn.disabled = true;
+        btn.textContent = 'adicionando...';
+        const row = await createItemRemote({
+          nome: ci.nome, categoria: group.categoria, tamanho: ci.tamanho,
+          preciso: ci.qtd, tenho: 0, prioridade: ci.prioridade, valor: 0,
+          origem: 'planejado', quemDeu: '', agradecido: false, notas: '',
+        });
+        if (row) {
+          showToast(ci.nome + ' adicionado à sua lista');
+          renderAll();
+        } else {
+          btn.disabled = false;
+          btn.textContent = '+ Adicionar';
+        }
+      });
+    });
   }
 
   // ---------- Render: Shopping list ----------
   function renderShopList() {
-    const pending = items.filter(it => it.tenho < it.preciso);
+    const pending = items.filter(it => (Number(it.tenho) || 0) < (Number(it.preciso) || 1));
     const container = $('shopList');
     container.innerHTML = '';
     $('shopEmpty').style.display = pending.length === 0 ? 'block' : 'none';
 
+    let grandTotal = 0;
+
     allCategorias().forEach(cat => {
-      const catPending = pending.filter(i => i.categoria === cat.id);
+      const catPending = pending.filter(i => i.categoria === cat.id)
+        .slice()
+        .sort((a, b) => (prioridadeOf(a) === 'essencial' ? 0 : 1) - (prioridadeOf(b) === 'essencial' ? 0 : 1));
       if (!catPending.length) return;
+      let catTotal = 0;
       const group = document.createElement('div');
       group.className = 'shop-group';
-      let html = '<h3>' + cat.icon + ' ' + cat.label + '</h3>';
+      let html = '<h3><span class="sg-title">' + cat.icon + ' ' + escapeHtml(cat.label) + '</span><span class="sg-total" data-cat-total="' + cat.id + '"></span></h3>';
       catPending.forEach(it => {
-        const falta = it.preciso - it.tenho;
+        const preciso = Number(it.preciso) || 1;
+        const tenho = Number(it.tenho) || 0;
+        const falta = preciso - tenho;
+        const custo = falta * valorOf(it);
+        catTotal += custo;
+        grandTotal += custo;
         html += '<div class="shop-item">' +
-          '<div><div class="sname">' + escapeHtml(it.nome) + '</div><div class="ssize">Tamanho ' + it.tamanho + (it.notas ? ' · ' + escapeHtml(it.notas) : '') + '</div></div>' +
-          '<div class="sneed">faltam ' + falta + '</div>' +
+          '<div><div class="sname">' + escapeHtml(it.nome) + (prioridadeOf(it) === 'essencial' ? ' <span class="badge priority-essencial">essencial</span>' : '') + '</div><div class="ssize">Tamanho ' + it.tamanho + (it.notas ? ' · ' + escapeHtml(it.notas) : '') + '</div></div>' +
+          '<div><div class="sneed">faltam ' + falta + '</div>' + (custo > 0 ? '<div class="scost">' + formatMoney(custo) + '</div>' : '') + '</div>' +
         '</div>';
       });
       group.innerHTML = html;
       container.appendChild(group);
+      const totalEl = group.querySelector('[data-cat-total="' + cat.id + '"]');
+      if (totalEl && catTotal > 0) totalEl.textContent = formatMoney(catTotal);
     });
+
+    if (pending.length) {
+      const totalRow = document.createElement('div');
+      totalRow.className = 'shop-total-row';
+      totalRow.innerHTML = '<span>Total estimado</span><span>' + formatMoney(grandTotal) + '</span>';
+      container.appendChild(totalRow);
+    }
+  }
+
+  // ---------- Render: Orçamento ----------
+  function renderOrcamento() {
+    let totalEstimado = 0, totalGarantido = 0, totalFalta = 0, economia = 0;
+    const porCategoria = {};
+
+    items.forEach(it => {
+      const preciso = Number(it.preciso) || 1;
+      const tenho = Number(it.tenho) || 0;
+      const valor = valorOf(it);
+      totalEstimado += preciso * valor;
+      totalGarantido += Math.min(tenho, preciso) * valor;
+      totalFalta += Math.max(0, preciso - tenho) * valor;
+      if (it.origem === 'ganhei') economia += Math.min(tenho, preciso) * valor;
+
+      const remaining = Math.max(0, preciso - tenho) * valor;
+      if (remaining > 0) {
+        porCategoria[it.categoria] = (porCategoria[it.categoria] || 0) + remaining;
+      }
+    });
+
+    $('budTotal').textContent = formatMoney(totalEstimado);
+    $('budGarantido').textContent = formatMoney(totalGarantido);
+    $('budFalta').textContent = formatMoney(totalFalta);
+    $('budEconomia').textContent = formatMoney(economia);
+
+    const list = $('budgetList');
+    list.innerHTML = '';
+    const entries = Object.keys(porCategoria)
+      .map(id => ({ cat: catInfo(id), value: porCategoria[id] }))
+      .sort((a, b) => b.value - a.value);
+
+    const maxValue = entries.length ? entries[0].value : 0;
+
+    entries.forEach(entry => {
+      const pct = maxValue ? Math.round((entry.value / maxValue) * 100) : 0;
+      const row = document.createElement('div');
+      row.className = 'budget-bar-row';
+      row.innerHTML =
+        '<div class="bb-icon">' + entry.cat.icon + '</div>' +
+        '<div class="bb-info">' +
+          '<div class="bb-name">' + escapeHtml(entry.cat.label) + '</div>' +
+          '<div class="bb-track"><div class="bb-fill" style="width:' + pct + '%"></div></div>' +
+        '</div>' +
+        '<div class="bb-value">' + formatMoney(entry.value) + '</div>';
+      list.appendChild(row);
+    });
+    if (!entries.length) {
+      list.innerHTML = '<p style="color:var(--ink-soft); font-size:14px;">Nenhum valor estimado cadastrado ainda. Defina um "Valor estimado" ao criar ou editar um item para ver o orçamento aqui.</p>';
+    }
   }
 
   function renderAll() {
     renderDashboard();
     renderItemList();
+    renderCatalogo();
     renderShopList();
+    renderOrcamento();
   }
 
-  ['searchInput', 'filterCategoria', 'filterTamanho', 'filterStatus'].forEach(id => {
+  ['searchInput', 'filterCategoria', 'filterTamanho', 'filterPrioridade', 'filterStatus', 'sortBy'].forEach(id => {
     $(id).addEventListener('input', renderItemList);
     $(id).addEventListener('change', renderItemList);
   });
