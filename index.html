@@ -584,6 +584,76 @@
     color: var(--brown);
   }
 
+  /* ================= O QUE JÁ TENHO ================= */
+
+  .tenho-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--sage-bg);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+  }
+  .tenho-item .sname { font-weight: 700; color: var(--brown); font-size: 14px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .tenho-item .ssize { font-size: 12px; color: var(--ink-soft); }
+  .tenho-item .shave { font-weight: 800; color: var(--sage); font-size: 14px; white-space: nowrap; text-align: right; }
+
+  /* ================= IMPRIMIR / RELATÓRIO ================= */
+
+  .print-summary-row {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    padding: 14px 0 18px;
+    border-bottom: 2px solid var(--line);
+    margin-bottom: 16px;
+  }
+  .print-summary-row .ps-item { text-align: left; }
+  .print-summary-row .ps-num { font-family: 'Fredoka'; font-size: 22px; color: var(--brown); }
+  .print-summary-row .ps-lbl { font-size: 11.5px; color: var(--ink-soft); font-weight: 700; }
+  .print-section-title {
+    font-family: 'Fredoka';
+    font-size: 17px;
+    color: var(--brown);
+    margin: 22px 0 10px;
+    padding-top: 6px;
+  }
+  .print-section-title:first-child { margin-top: 0; }
+  .print-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  .print-table th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    color: var(--ink-soft);
+    padding: 6px 8px;
+    border-bottom: 2px solid var(--line);
+  }
+  .print-table td {
+    padding: 7px 8px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .print-table td.strong { font-weight: 700; color: var(--brown); }
+  .print-cat-head td {
+    background: var(--cream);
+    font-weight: 800;
+    color: var(--brown);
+    padding-top: 10px;
+  }
+  .print-meta {
+    color: var(--ink-soft);
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
   /* ================= ORÇAMENTO ================= */
 
   .budget-bar-row {
@@ -659,6 +729,10 @@
   @media print {
     .sidebar, .topbar, .toolbar, .row-actions, .sidebar-overlay { display: none !important; }
     .main { margin-left: 0 !important; }
+    .content { padding: 0 !important; max-width: none !important; }
+    .card { box-shadow: none !important; border: 1px solid var(--line); }
+    #view-imprimir .btn { display: none !important; }
+    .print-cat-head, .print-table tr { break-inside: avoid; }
   }
 </style>
 </head>
@@ -696,8 +770,10 @@
       <button class="side-link active" data-view="dashboard"><span class="ic">🏠</span> Painel</button>
       <button class="side-link" data-view="itens"><span class="ic">🧺</span> Itens</button>
       <button class="side-link" data-view="catalogo"><span class="ic">📋</span> Catálogo rápido</button>
+      <button class="side-link" data-view="tenho"><span class="ic">✅</span> O que já tenho</button>
       <button class="side-link" data-view="compras"><span class="ic">🛒</span> Lista de compras</button>
       <button class="side-link" data-view="orcamento"><span class="ic">💰</span> Orçamento</button>
+      <button class="side-link" data-view="imprimir"><span class="ic">🖨️</span> Imprimir</button>
     </nav>
 
     <div class="sidebar-foot">
@@ -799,9 +875,32 @@
       <!-- ===================== CATÁLOGO RÁPIDO ===================== -->
       <section id="view-catalogo" class="view">
         <div class="card">
-          <h2>Catálogo rápido</h2>
-          <div class="card-sub">Uma lista pronta com o essencial de um enxoval. Toque em "+ Adicionar" para colocar na sua lista — os itens já na sua lista aparecem marcados.</div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px;">
+            <div>
+              <h2>Catálogo rápido</h2>
+              <div class="card-sub">Uma base pronta com quantidades sugeridas (pesquisadas) para um enxoval completo. Adicione tudo de uma vez e depois ajuste — ou vá item por item.</div>
+            </div>
+            <button class="btn btn-primary" id="addAllCatalogBtn">✨ Adicionar lista completa</button>
+          </div>
           <div id="catalogoContent"></div>
+        </div>
+      </section>
+
+      <!-- ===================== O QUE JÁ TENHO ===================== -->
+      <section id="view-tenho" class="view">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <h2>O que já tenho</h2>
+            <button class="btn btn-ghost" onclick="window.print()">Imprimir / exportar</button>
+          </div>
+          <div class="card-sub">Tudo que você já garantiu — seja ganhando de presente ou comprando</div>
+          <div class="paw-divider"><span class="line"></span></div>
+          <div id="tenhoList"></div>
+          <div class="empty" id="tenhoEmpty" style="display:none;">
+            <div class="emoji">📦</div>
+            <h3>Ainda nada por aqui</h3>
+            <p>Assim que você marcar quantidades em "tenho" nos itens, eles aparecem aqui.</p>
+          </div>
         </div>
       </section>
 
@@ -839,6 +938,21 @@
           <h2>Quanto falta investir, por categoria</h2>
           <div class="card-sub">Categorias ordenadas pelo que mais pesa no bolso</div>
           <div id="budgetList"></div>
+        </div>
+      </section>
+
+      <!-- ===================== IMPRIMIR ===================== -->
+      <section id="view-imprimir" class="view">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h2>Relatório completo</h2>
+              <div class="card-sub">Tudo em uma página só, pronta para imprimir ou salvar em PDF</div>
+            </div>
+            <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir agora</button>
+          </div>
+          <div class="paw-divider"><span class="line"></span></div>
+          <div id="printContent"></div>
         </div>
       </section>
 
@@ -942,38 +1056,41 @@
   const ORIGEM_LABEL = { planejado: 'A providenciar', ganhei: 'Ganhei', comprei: 'Comprei', misto: 'Ganhei + comprei' };
   const PRIORIDADE_LABEL = { essencial: 'Essencial', desejavel: 'Desejável' };
 
-  // Catálogo rápido — base sugerida de um enxoval, por categoria
+  // Catálogo rápido — base sugerida de um enxoval, por categoria.
+  // Quantidades revisadas com base em guias de enxoval (ver fontes na conversa).
   const CATALOGO_RAPIDO = [
     { categoria: 'roupa', itens: [
       { nome: 'Body manga curta', tamanho: 'RN', qtd: 6, prioridade: 'essencial' },
-      { nome: 'Body manga longa', tamanho: 'RN', qtd: 4, prioridade: 'essencial' },
-      { nome: 'Macacão curto', tamanho: 'P', qtd: 4, prioridade: 'essencial' },
-      { nome: 'Macacão longo', tamanho: 'P', qtd: 4, prioridade: 'essencial' },
-      { nome: 'Calça', tamanho: 'P', qtd: 4, prioridade: 'desejavel' },
+      { nome: 'Body manga longa', tamanho: 'RN', qtd: 6, prioridade: 'essencial' },
+      { nome: 'Macacão / pijama com pezinho', tamanho: 'P', qtd: 6, prioridade: 'essencial' },
+      { nome: 'Calça ou culote', tamanho: 'P', qtd: 5, prioridade: 'desejavel' },
       { nome: 'Casaco / jaquetinha', tamanho: 'P', qtd: 2, prioridade: 'essencial' },
-      { nome: 'Touca', tamanho: 'Único', qtd: 2, prioridade: 'essencial' },
-      { nome: 'Luvas', tamanho: 'Único', qtd: 2, prioridade: 'desejavel' },
-      { nome: 'Meias', tamanho: 'P', qtd: 6, prioridade: 'essencial' },
-      { nome: 'Babador de pano', tamanho: 'Único', qtd: 6, prioridade: 'essencial' },
+      { nome: 'Touca', tamanho: 'RN', qtd: 2, prioridade: 'essencial' },
+      { nome: 'Luvas', tamanho: 'RN', qtd: 2, prioridade: 'desejavel' },
+      { nome: 'Pares de meia', tamanho: 'RN', qtd: 6, prioridade: 'essencial' },
+      { nome: 'Babador de pano (para baba)', tamanho: 'Único', qtd: 6, prioridade: 'essencial' },
     ]},
     { categoria: 'calcado', itens: [
       { nome: 'Sapatinho / pantufa', tamanho: 'RN', qtd: 2, prioridade: 'desejavel' },
     ]},
     { categoria: 'higiene', itens: [
-      { nome: 'Fralda descartável RN (pacotes)', tamanho: 'Único', qtd: 2, prioridade: 'essencial' },
+      { nome: 'Fralda descartável RN (pacotes)', tamanho: 'RN', qtd: 2, prioridade: 'essencial' },
+      { nome: 'Fralda descartável P (pacotes)', tamanho: 'P', qtd: 3, prioridade: 'essencial' },
       { nome: 'Lenços umedecidos (pacotes)', tamanho: 'Único', qtd: 4, prioridade: 'essencial' },
       { nome: 'Pomada para assaduras', tamanho: 'Único', qtd: 2, prioridade: 'essencial' },
-      { nome: 'Sabonete líquido neutro', tamanho: 'Único', qtd: 2, prioridade: 'essencial' },
+      { nome: 'Sabonete líquido neutro', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
       { nome: 'Shampoo neutro', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
-      { nome: 'Escova e pente', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
+      { nome: 'Kit de higiene (escova, pente, tesoura)', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
       { nome: 'Cortador de unha', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
-      { nome: 'Toalha de banho com capuz', tamanho: 'Único', qtd: 3, prioridade: 'essencial' },
+      { nome: 'Toalha de banho com capuz', tamanho: 'Único', qtd: 2, prioridade: 'essencial' },
       { nome: 'Fralda de pano (paninho)', tamanho: 'Único', qtd: 8, prioridade: 'essencial' },
+      { nome: 'Banheira', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
     ]},
     { categoria: 'quarto', itens: [
       { nome: 'Berço', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
       { nome: 'Colchão para berço', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
-      { nome: 'Jogo de lençol de berço', tamanho: 'Único', qtd: 3, prioridade: 'essencial' },
+      { nome: 'Jogo de lençol de berço', tamanho: 'Único', qtd: 4, prioridade: 'essencial' },
+      { nome: 'Cobertores / mantas de berço', tamanho: 'Único', qtd: 3, prioridade: 'essencial' },
       { nome: 'Protetor de berço', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
       { nome: 'Travesseiro infantil', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
       { nome: 'Cortina blackout', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
@@ -983,7 +1100,8 @@
       { nome: 'Mamadeira', tamanho: 'Único', qtd: 3, prioridade: 'essencial' },
       { nome: 'Escova para mamadeira', tamanho: 'Único', qtd: 1, prioridade: 'essencial' },
       { nome: 'Esterilizador', tamanho: 'Único', qtd: 1, prioridade: 'desejavel' },
-      { nome: 'Babador impermeável', tamanho: 'Único', qtd: 4, prioridade: 'desejavel' },
+      { nome: 'Babador impermeável (refeição)', tamanho: 'Único', qtd: 5, prioridade: 'desejavel' },
+      { nome: 'Paninho de boca', tamanho: 'Único', qtd: 5, prioridade: 'essencial' },
     ]},
     { categoria: 'amamentacao', itens: [
       { nome: 'Sutiã de amamentação', tamanho: 'Único', qtd: 3, prioridade: 'essencial' },
@@ -1186,8 +1304,10 @@
     dashboard: 'Painel',
     itens: 'Itens',
     catalogo: 'Catálogo rápido',
+    tenho: 'O que já tenho',
     compras: 'Lista de compras',
     orcamento: 'Orçamento',
+    imprimir: 'Imprimir relatório',
   };
 
   function switchView(view) {
@@ -1592,6 +1712,131 @@
     });
   }
 
+  $('addAllCatalogBtn').addEventListener('click', async () => {
+    const pending = [];
+    CATALOGO_RAPIDO.forEach(group => {
+      group.itens.forEach(ci => {
+        if (!itemExists(ci.nome, ci.tamanho)) pending.push({ group, ci });
+      });
+    });
+    if (!pending.length) { showToast('Você já tem todos os itens do catálogo na sua lista'); return; }
+    if (!confirm('Isso vai adicionar ' + pending.length + ' item(ns) sugerido(s) à sua lista (os que já existem são pulados). Você pode editar ou remover qualquer um depois. Continuar?')) return;
+
+    const btn = $('addAllCatalogBtn');
+    btn.disabled = true;
+    let count = 0;
+    for (const { group, ci } of pending) {
+      btn.textContent = 'Adicionando... (' + (count + 1) + '/' + pending.length + ')';
+      const row = await createItemRemote({
+        nome: ci.nome, categoria: group.categoria, tamanho: ci.tamanho,
+        preciso: ci.qtd, tenho: 0, prioridade: ci.prioridade, valor: 0,
+        origem: 'planejado', quemDeu: '', agradecido: false, notas: '',
+      });
+      if (row) count++;
+    }
+    btn.disabled = false;
+    btn.textContent = '✨ Adicionar lista completa';
+    showToast(count + ' item(ns) adicionado(s)');
+    renderAll();
+  });
+
+  // ---------- Render: O que já tenho ----------
+  function renderTenho() {
+    const owned = items.filter(it => (Number(it.tenho) || 0) > 0);
+    const container = $('tenhoList');
+    container.innerHTML = '';
+    $('tenhoEmpty').style.display = owned.length === 0 ? 'block' : 'none';
+
+    allCategorias().forEach(cat => {
+      const catOwned = owned.filter(i => i.categoria === cat.id);
+      if (!catOwned.length) return;
+      const group = document.createElement('div');
+      group.className = 'shop-group';
+      let html = '<h3><span class="sg-title">' + cat.icon + ' ' + escapeHtml(cat.label) + '</span></h3>';
+      catOwned.forEach(it => {
+        const preciso = Number(it.preciso) || 1;
+        const tenho = Number(it.tenho) || 0;
+        const completo = tenho >= preciso;
+        html += '<div class="tenho-item">' +
+          '<div><div class="sname">' + escapeHtml(it.nome) + ' <span class="badge">' + ORIGEM_LABEL[it.origem] + '</span></div>' +
+          '<div class="ssize">Tamanho ' + it.tamanho + (it.quemDeu ? ' · de ' + escapeHtml(it.quemDeu) : '') + '</div></div>' +
+          '<div class="shave">' + tenho + (completo ? ' ✓ completo' : ' de ' + preciso) + '</div>' +
+        '</div>';
+      });
+      group.innerHTML = html;
+      container.appendChild(group);
+    });
+  }
+
+  // ---------- Render: Relatório / Imprimir ----------
+  function renderPrint() {
+    let totalPreciso = 0, totalTenho = 0, totalValorFalta = 0;
+    items.forEach(it => {
+      const preciso = Number(it.preciso) || 1;
+      const tenho = Number(it.tenho) || 0;
+      totalPreciso += preciso;
+      totalTenho += Math.min(tenho, preciso);
+      if (tenho < preciso) totalValorFalta += (preciso - tenho) * valorOf(it);
+    });
+    const pct = totalPreciso ? Math.round((totalTenho / totalPreciso) * 100) : 0;
+    const dataHoje = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+
+    let html = '';
+    html += '<div class="print-meta"><strong>' + escapeHtml(settings.title || 'Enxoval da Bebê') + '</strong> — relatório gerado em ' + dataHoje + '</div>';
+    html += '<div class="print-summary-row">' +
+      '<div class="ps-item"><div class="ps-num">' + pct + '%</div><div class="ps-lbl">completo</div></div>' +
+      '<div class="ps-item"><div class="ps-num">' + items.length + '</div><div class="ps-lbl">itens cadastrados</div></div>' +
+      '<div class="ps-item"><div class="ps-num">' + formatMoney(totalValorFalta) + '</div><div class="ps-lbl">estimado para comprar</div></div>' +
+    '</div>';
+
+    // O que já tenho
+    html += '<div class="print-section-title">✅ O que já tenho</div>';
+    const owned = items.filter(it => (Number(it.tenho) || 0) > 0);
+    if (!owned.length) {
+      html += '<p style="color:var(--ink-soft); font-size:13px;">Nenhum item garantido ainda.</p>';
+    } else {
+      html += '<table class="print-table"><thead><tr><th>Item</th><th>Tamanho</th><th>Tenho</th><th>Origem</th></tr></thead><tbody>';
+      allCategorias().forEach(cat => {
+        const catOwned = owned.filter(i => i.categoria === cat.id);
+        if (!catOwned.length) return;
+        html += '<tr class="print-cat-head"><td colspan="4">' + cat.icon + ' ' + escapeHtml(cat.label) + '</td></tr>';
+        catOwned.forEach(it => {
+          const preciso = Number(it.preciso) || 1;
+          const tenho = Number(it.tenho) || 0;
+          html += '<tr><td class="strong">' + escapeHtml(it.nome) + '</td><td>' + it.tamanho + '</td><td>' + tenho + ' de ' + preciso + '</td><td>' + ORIGEM_LABEL[it.origem] + '</td></tr>';
+        });
+      });
+      html += '</tbody></table>';
+    }
+
+    // O que falta comprar
+    html += '<div class="print-section-title">🛒 O que falta comprar</div>';
+    const pending = items.filter(it => (Number(it.tenho) || 0) < (Number(it.preciso) || 1));
+    if (!pending.length) {
+      html += '<p style="color:var(--ink-soft); font-size:13px;">Nada pendente — está tudo garantido!</p>';
+    } else {
+      html += '<table class="print-table"><thead><tr><th>Item</th><th>Tamanho</th><th>Faltam</th><th>Prioridade</th><th>Estimativa</th></tr></thead><tbody>';
+      let grandTotal = 0;
+      allCategorias().forEach(cat => {
+        const catPending = pending.filter(i => i.categoria === cat.id);
+        if (!catPending.length) return;
+        html += '<tr class="print-cat-head"><td colspan="5">' + cat.icon + ' ' + escapeHtml(cat.label) + '</td></tr>';
+        catPending.forEach(it => {
+          const preciso = Number(it.preciso) || 1;
+          const tenho = Number(it.tenho) || 0;
+          const falta = preciso - tenho;
+          const custo = falta * valorOf(it);
+          grandTotal += custo;
+          html += '<tr><td class="strong">' + escapeHtml(it.nome) + '</td><td>' + it.tamanho + '</td><td>' + falta + '</td><td>' + PRIORIDADE_LABEL[prioridadeOf(it)] + '</td><td>' + (custo > 0 ? formatMoney(custo) : '—') + '</td></tr>';
+        });
+      });
+      html += '<tr><td colspan="4" class="strong" style="text-align:right;">Total estimado</td><td class="strong">' + formatMoney(grandTotal) + '</td></tr>';
+      html += '</tbody></table>';
+    }
+
+    $('printContent').innerHTML = html;
+  }
+
   // ---------- Render: Shopping list ----------
   function renderShopList() {
     const pending = items.filter(it => (Number(it.tenho) || 0) < (Number(it.preciso) || 1));
@@ -1691,8 +1936,10 @@
     renderDashboard();
     renderItemList();
     renderCatalogo();
+    renderTenho();
     renderShopList();
     renderOrcamento();
+    renderPrint();
   }
 
   ['searchInput', 'filterCategoria', 'filterTamanho', 'filterPrioridade', 'filterStatus', 'sortBy'].forEach(id => {
